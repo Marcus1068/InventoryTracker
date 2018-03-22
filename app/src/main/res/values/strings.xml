@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">InventoryTracker</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="inventory_tracker">Inventory Tracker</string>
+    <string name="email_support">mdeuss@gmail.com</string>
+</resources>
