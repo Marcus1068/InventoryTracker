@@ -4,15 +4,14 @@ package de.marcus_deuss.inventorytracker;
  * Created by marcus on 24.03.18.
  */
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -21,9 +20,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "inventoryManager";
+    private static final String DATABASE_NAME = "inventoryManager.db";
 
-
+    private static final String TAG = "InventoryTracker";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -201,13 +200,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Getting inventory Count
     public int getInventoryCount() {
-        String countQuery = "SELECT  * FROM " + Inventory.TABLE_NAME;
+        String countQuery = "SELECT * FROM " + Inventory.TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
+
+        int cnt = cursor.getCount();
+
         cursor.close();
+        db.close();
 
         // return count
-        return cursor.getCount();
+        return cnt;
     }
 
 
@@ -225,6 +228,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    // for debug purposes to get a dump of complete contents
+    public void printDatabaseContents(){
+
+        Log.d(TAG, "Number of rows ...");
+        int count = this.getInventoryCount();
+        String cnt = String.valueOf(count);
+        Log.d(TAG, cnt );
+
+        // print all rows
+        List<Inventory> inventoryList = new ArrayList<Inventory>();
+        inventoryList = getAllInventory();
+
+        for(Inventory inv : inventoryList){
+            Log.d(TAG, "Inventory name - " + inv.getInventoryName() +
+                    "Brand - " + inv.getBrandName() +
+                    "Category - " + inv.getCategoryName() +
+                    "Room - " + inv.getRoomName());
+        }
+        //Log.d(TAG, )
+
+    }
 
 }
 

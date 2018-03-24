@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "InventoryTracker";
 
+    private DatabaseHelper db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // init the sqlite database
+        db = new DatabaseHelper(this);
+
+        // some sample data
+        // TODO needs to be removed in final software
+        db.generateSampleData();
+        db.printDatabaseContents();
     }
 
     @Override
