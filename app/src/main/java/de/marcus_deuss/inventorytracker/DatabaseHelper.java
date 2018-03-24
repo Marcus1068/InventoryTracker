@@ -238,15 +238,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // print all rows
         List<Inventory> inventoryList = new ArrayList<Inventory>();
-        inventoryList = getAllInventory();
-
-        for(Inventory inv : inventoryList){
-            Log.d(TAG, "Inventory name - " + inv.getInventoryName() +
-                    "Brand - " + inv.getBrandName() +
-                    "Category - " + inv.getCategoryName() +
-                    "Room - " + inv.getRoomName());
+        for (Inventory inventory : inventoryList = getAllInventory()) {
+            Log.d(TAG, "Inventory name - " + inventory.getInventoryName() +
+                    " Brand - " + inventory.getBrandName() +
+                    " Category - " + inventory.getCategoryName() +
+                    " Room - " + inventory.getRoomName());
         }
-        //Log.d(TAG, )
+
 
     }
 
