@@ -59,7 +59,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(Inventory.COLUMN_DATEOFPURCHASE, inventory.getDateOfPurchase());
         values.put(Inventory.COLUMN_PRICE, inventory.getPrice());
         values.put(Inventory.COLUMN_INVOICE, inventory.getInvoice());
-        values.put(Inventory.COLUMN_TIMESTAMP, inventory.getTimeStamp());
+        // timeStamp will be inserted automatically
+        // values.put(Inventory.COLUMN_TIMESTAMP, inventory.getTimeStamp());
         values.put(Inventory.COLUMN_WARRANTY, inventory.getWarranty());
         values.put(Inventory.COLUMN_SERIALNUMBER, inventory.getSerialNumber());
         values.put(Inventory.COLUMN_IMAGE, inventory.getImage());
@@ -120,13 +121,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-    // Getting all Inventory items
-    public List<Inventory> getAllInventory() {
+    // Getting all Inventory items, sorted by inventory name first, then owner
+    public List<Inventory> getInventoryList() {
         List<Inventory> inventoryList = new ArrayList<Inventory>();
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + Inventory.TABLE_NAME + " ORDER BY " +
-                Inventory.COLUMN_INVENTORYNAME + " DESC";
+        String selectQuery = "SELECT * FROM " + Inventory.TABLE_NAME + " ORDER BY " +
+                Inventory.COLUMN_INVENTORYNAME + ", " + Inventory.COLUMN_OWNERNAME + " COLLATE NOCASE ASC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -136,7 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Inventory inv = new Inventory();
                 inv.setId(cursor.getLong(cursor.getColumnIndex(Inventory.COLUMN_ID)));
-                inv.setInventoryName(cursor.getString(cursor.getColumnIndex(Inventory.COLUMN_CATEGORYNAME)));
+                inv.setInventoryName(cursor.getString(cursor.getColumnIndex(Inventory.COLUMN_INVENTORYNAME)));
                 inv.setDateOfPurchase(cursor.getString(cursor.getColumnIndex(Inventory.COLUMN_DATEOFPURCHASE)));
                 inv.setPrice(cursor.getInt(cursor.getColumnIndex(Inventory.COLUMN_PRICE)));
                 inv.setInvoice(cursor.getBlob(cursor.getColumnIndex(Inventory.COLUMN_INVOICE)));
@@ -238,11 +239,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // print all rows
         List<Inventory> inventoryList = new ArrayList<Inventory>();
-        for (Inventory inventory : inventoryList = getAllInventory()) {
-            Log.d(TAG, "Inventory name - " + inventory.getInventoryName() +
-                    " Brand - " + inventory.getBrandName() +
-                    " Category - " + inventory.getCategoryName() +
-                    " Room - " + inventory.getRoomName());
+        for (Inventory inventory : inventoryList = getInventoryList()) {
+            Log.d(TAG, "NAME - " + inventory.getInventoryName() +
+                    " OWNER - " + inventory.getOwnerName() +
+                    " ID - " + String.valueOf(inventory.getId()) +
+                    " TIMEST. - " + inventory.getTimeStamp() +
+                    " BRAND - " + inventory.getBrandName() +
+                    " CAT - " + inventory.getCategoryName() +
+                    " ROOM - " + inventory.getRoomName());
         }
 
 
