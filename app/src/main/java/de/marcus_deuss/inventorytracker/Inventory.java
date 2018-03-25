@@ -19,7 +19,7 @@ public class Inventory {
 
 
     // Inventory Table Column names
-    public static final String COLUMN_ID = "id";    // should always be id, needed by some android classes
+    public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
     public static final String COLUMN_INVENTORYNAME = "inventoryname";
     public static final String COLUMN_DATEOFPURCHASE = "dateofpurchase";
     public static final String COLUMN_PRICE = "price";

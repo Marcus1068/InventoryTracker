@@ -9,4 +9,5 @@
     <string name="email_support">mdeuss@gmail.com</string>
     <string name="noEmailInstalled">There is no email client installed.</string>
     <string name="toolTip">Replace with your own action</string>
+    <string name="createdDatabaseMsg">Created database</string>
 </resources>

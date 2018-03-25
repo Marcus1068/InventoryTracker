@@ -25,8 +25,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "InventoryTracker";
 
+    private SQLiteDatabase db;
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        db = this.getWritableDatabase();
     }
 
     // Creating Table
@@ -35,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             db.execSQL(Inventory.CREATE_TABLE);
+            Log.d(TAG, "created table ..." + Inventory.CREATE_TABLE);
         }
         catch (Exception ex){
             Log.e(TAG, ex.getMessage());
@@ -46,16 +51,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + Inventory.TABLE_NAME);
+        try {
+            db.execSQL("DROP TABLE IF EXISTS " + Inventory.TABLE_NAME);
+            // Create tables again
+            onCreate(db);
 
-        // Create tables again
-        onCreate(db);
+            Log.d(TAG, "upgraded table ..." + Inventory.CREATE_TABLE);
+        }
+        catch (Exception ex){
+            Log.e(TAG, ex.getMessage());
+        }
+    }
+
+    /**
+     * Liefert Cursor zum Zugriff auf alle Einträge, alphabetisch geordnet nach Spalte Inventory.COLUMN_INVENTORYNAME
+     * @return
+     */
+    public Cursor createListViewCursor() {
+        Log.d(TAG, "createListViewCursor() ...");
+
+        String[] columns = new String[]{Inventory.COLUMN_ID, Inventory.COLUMN_INVENTORYNAME, Inventory.COLUMN_ROOMNAME, Inventory.COLUMN_TIMESTAMP};
+        return  db.query(Inventory.TABLE_NAME, columns, null, null, null, null, Inventory.COLUMN_INVENTORYNAME);
     }
 
     // closing db
     @Override
-    public synchronized void close(){
-        //
+    public synchronized void close() {
+        Log.d(TAG, "close() ...");
+
+        if(db != null) {
+            db.close();
+            db = null;
+        }
+
         super.close();
     }
 
@@ -87,7 +115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Inserting Row
         long id = db.insert(Inventory.TABLE_NAME, null, values);
 
-        db.close(); // Closing database connection
+        // db.close(); // Closing database connection
 
         return id;
     }
@@ -171,7 +199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         // close db connection
-        db.close();
+        // db.close();
 
         // return inventory list
         return inventoryList;
@@ -209,7 +237,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(Inventory.TABLE_NAME, Inventory.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(inv.getId()) });
-        db.close();
+        // db.close();
     }
 
 
@@ -222,7 +250,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int cnt = cursor.getCount();
 
         cursor.close();
-        db.close();
+        // db.close();
 
         // return count
         return cnt;
@@ -268,10 +296,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "DATEOFP - " + inventory.getDateOfPurchase() +
                     " ROOM - " + inventory.getRoomName());
         }
-
-
     }
-
 }
 
 

@@ -1,6 +1,7 @@
 package de.marcus_deuss.inventorytracker;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,7 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CursorAdapter;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -23,6 +31,11 @@ public class MainActivity extends AppCompatActivity
     private final String TAG = "InventoryTracker";
 
     private DatabaseHelper db;
+    private SimpleCursorAdapter adapter;
+    private Cursor cursor;
+    private SimpleDateFormat dateFormat;
+
+    private ListView overviewListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +69,59 @@ public class MainActivity extends AppCompatActivity
         // TODO needs to be removed in final software
         db.generateSampleData();
         db.printDatabaseContents();
+
+        cursor = db.createListViewCursor();
+
+        overviewListView = (ListView) this.findViewById(R.id.listView1);
+
+        String[] anzeigeSpalten = new String[]{ Inventory.COLUMN_INVENTORYNAME, Inventory.COLUMN_ROOMNAME, Inventory.COLUMN_TIMESTAMP};
+        int[] anzeigeViews      = new int[]{ R.id.textViewInventoryName, R.id.textViewRoomName, R.id.textViewTimeStamp};
+        adapter                 = new SimpleCursorAdapter(this, R.layout.listviewlayout, cursor,
+                anzeigeSpalten, anzeigeViews,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
+
+        adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+                if (columnIndex == 3) {
+                    // timeStamp umformatieren
+                    try {
+                        long datum = cursor.getLong(columnIndex);
+
+                        if(datum != 0) {
+                            String str = dateFormat.format(new Date(datum));
+                            TextView anzeige = (TextView) view;
+                            anzeige.setText(str);
+                            return true;
+                        }
+                    }
+                    catch(Exception ex) {}
+                }
+
+                return false; //keine Änderung
+            }
+        });
+
+
+        overviewListView.setAdapter(adapter);
+
+        // some sample data
+        // TODO needs to be removed in final software
+        db.generateSampleData();
+        db.printDatabaseContents();
+    }
+
+    // close cursor and database
+    @Override
+    protected void onDestroy() {
+        if(cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        if(db != null) {
+            db.close();
+        }
+
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() succeeded");
     }
 
     @Override
