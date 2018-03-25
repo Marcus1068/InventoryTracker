@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     // All Static variables
@@ -32,7 +33,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL(Inventory.CREATE_TABLE);
+        try {
+            db.execSQL(Inventory.CREATE_TABLE);
+        }
+        catch (Exception ex){
+            Log.e(TAG, ex.getMessage());
+        }
+
     }
 
     // Upgrading database
@@ -43,6 +50,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Create tables again
         onCreate(db);
+    }
+
+    // closing db
+    @Override
+    public synchronized void close(){
+        //
+        super.close();
     }
 
     /**
@@ -95,7 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        // prepare note object
+        // prepare inventory object
         Inventory inv = new Inventory(
                 cursor.getLong(cursor.getColumnIndex(Inventory.COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(Inventory.COLUMN_INVENTORYNAME)),
@@ -227,6 +241,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Inventory inv3 = new Inventory((long) 0, "Thermomix", "12-09-2016", 1099, null,  "", 24, "nicht definiert", null, "keine Infos", "Sandra", "Küchengerät", "Thermomix", "Küche" );
         this.InsertInventory(inv3);
 
+        Inventory inv4 = new Inventory((long) 0, "Fritzbox 7590", "10-09-2017", 329, null,  "", 12, "nicht definiert", null, "keine Infos", "Marcus", "Technik", "AVM", "Wohnzimmer" );
+        this.InsertInventory(inv4);
+
+        Inventory inv5 = new Inventory((long) 0, "FritzWLAN 1730", "12-09-2016", 99, null,  "", 24, "nicht definiert", null, "keine Infos", "Marcus", "Technik", "AVM", "Büro" );
+        this.InsertInventory(inv5);
     }
 
     // for debug purposes to get a dump of complete contents
@@ -246,6 +265,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     " TIMEST. - " + inventory.getTimeStamp() +
                     " BRAND - " + inventory.getBrandName() +
                     " CAT - " + inventory.getCategoryName() +
+                    "DATEOFP - " + inventory.getDateOfPurchase() +
                     " ROOM - " + inventory.getRoomName());
         }
 

@@ -1,6 +1,8 @@
 package de.marcus_deuss.inventorytracker;
 
 
+import java.util.Date;
+
 /**
  * Created by marcus on 22.03.18.
  */
@@ -17,7 +19,7 @@ public class Inventory {
 
 
     // Inventory Table Column names
-    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "id";    // should always be id, needed by some android classes
     public static final String COLUMN_INVENTORYNAME = "inventoryname";
     public static final String COLUMN_DATEOFPURCHASE = "dateofpurchase";
     public static final String COLUMN_PRICE = "price";
@@ -35,8 +37,8 @@ public class Inventory {
     // Create table SQL query string
     public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INVENTORYNAME + " TEXT,"
-            + COLUMN_DATEOFPURCHASE  + " DATETIME," + COLUMN_PRICE + " INTEGER,"
-            + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATETIME DEFAULT CURRENT_TIMESTAMP,"
+            + COLUMN_DATEOFPURCHASE  + " DATE," + COLUMN_PRICE + " INTEGER,"
+            + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
             + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
             + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
             + COLUMN_OWNERNAME + " TEXT," + COLUMN_CATEGORYNAME + " TEXT,"
