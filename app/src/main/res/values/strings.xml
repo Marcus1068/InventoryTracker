@@ -11,4 +11,5 @@
     <string name="toolTip">Replace with your own action</string>
     <string name="createdDatabaseMsg">Created database</string>
     <string name="title_activity_edit_inventory">Edit Inventory</string>
+    <string name="notImplementedYet">Not implemented yet</string>
 </resources>

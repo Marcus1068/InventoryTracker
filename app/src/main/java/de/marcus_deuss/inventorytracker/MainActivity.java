@@ -24,11 +24,12 @@ import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = "InventoryTracker";
+    private static final String TAG = "InventoryTracker.MainActivity";
 
     private DatabaseHelper db;
     private SimpleCursorAdapter adapter;
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-
+                Log.d(TAG, "setOnItemClickListener");
                 // ListView Clicked item index
                 int itemPosition     = position;
 
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity
     // close cursor and database
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy");
+
         if(cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
@@ -148,6 +153,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        Log.d(TAG, "onBackPressed");
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -158,6 +165,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu");
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
 
@@ -166,6 +174,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "onOptionsItemSelected");
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -173,6 +183,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Log.d(TAG, "settings calling...");
+            // settings menu selected
             return true;
         }
 
@@ -183,7 +195,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        Log.d(TAG, "menu selection");
+        Log.d(TAG, "onNavigationItemSelected");
 
         int id = item.getItemId();
 
@@ -196,19 +208,21 @@ public class MainActivity extends AppCompatActivity
             this.startActivity(editForm);
 
         } else if (id == R.id.nav_gallery) {
-            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_slideshow) {
-            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_manage) {
-            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_share) {
-            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_send) {
-            Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
+            String locale = Locale.getDefault().getLanguage();
+
+            Toast.makeText(this, "System language:" + locale, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -220,9 +234,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     // send an email and check for preconditions
-    protected void sendEmail() {
-        Log.i(TAG, "");
-        String[] TO = {""};
+    protected void sendEmail(String sendTo, String subject, String text) {
+        Log.d(TAG, "sendEmail");
+
+        String[] TO = {sendTo};
         String[] CC = {""};
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
@@ -230,13 +245,13 @@ public class MainActivity extends AppCompatActivity
         emailIntent.setType("text/plain");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
         emailIntent.putExtra(Intent.EXTRA_CC, CC);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, text);
 
         try {
-            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            startActivity(Intent.createChooser(emailIntent, "Sending mail..."));
             finish();
-            Log.i(TAG, "");
+            Log.d(TAG, "Email sent...");
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(MainActivity.this, R.string.noEmailInstalled, Toast.LENGTH_SHORT).show();
         }

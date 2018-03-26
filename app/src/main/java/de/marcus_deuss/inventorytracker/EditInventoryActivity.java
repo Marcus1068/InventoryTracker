@@ -1,6 +1,5 @@
 package de.marcus_deuss.inventorytracker;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditInventoryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    private static final String TAG = "InventoryTracker.EditActivityTracker";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,38 +36,78 @@ public class EditInventoryActivity extends AppCompatActivity implements AdapterV
             }
         });
 
-        // Spinner element
-        Spinner spinnerRoomName = (Spinner) findViewById(R.id.spinnerRoomname);
+        // room Spinner element
+        Spinner spinnerRoom = (Spinner) findViewById(R.id.spinnerRoom);
 
         // Spinner click listener
-        spinnerRoomName.setOnItemSelectedListener(this);
+        spinnerRoom.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> rooms = new ArrayList<String>();
+        rooms.add("no Room");
+        rooms.add("Kitchen");
+        rooms.add("Living Room");
+        rooms.add("Cellar");
+        rooms.add("Bath Room");
+        rooms.add("Office");
+
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapterRoom = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, rooms);
+
+        // Drop down layout style - list view with radio button
+        dataAdapterRoom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinnerRoom.setAdapter(dataAdapterRoom);
+
+        // category Spinner element
+        Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+
+        // Spinner click listener
+        spinnerCategory.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
         List<String> categories = new ArrayList<String>();
-        categories.add("no Room");
-        categories.add("Kitchen");
-        categories.add("Living Room");
-        categories.add("Cellar");
-        categories.add("Bath Room");
-        categories.add("Office");
+        categories.add("no Category");
+        categories.add("Furniture");
+        categories.add("Toys");
+        categories.add("Technology");
+        categories.add("Computer");
+        categories.add("Stuff");
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapterCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
 
         // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // attaching data adapter to spinner
-        spinnerRoomName.setAdapter(dataAdapter);
+        spinnerCategory.setAdapter(dataAdapterCategory);
     }
 
+    // assign chosen Spinners
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
-        String item = parent.getItemAtPosition(position).toString();
+        switch(parent.getId()){
+            case R.id.spinnerRoom:
+                // On selecting a spinner item
+                String room = parent.getItemAtPosition(position).toString();
 
-        // Showing selected spinner item
-        Toast.makeText(parent.getContext(), "Selected: " + item, Toast.LENGTH_LONG).show();
+                // Showing selected spinner item
+                Toast.makeText(parent.getContext(), "Selected: " + room, Toast.LENGTH_SHORT).show();
+                break;
+
+            case R.id.spinnerCategory:
+                // On selecting a spinner item
+                String category = parent.getItemAtPosition(position).toString();
+
+                // Showing selected spinner item
+                Toast.makeText(parent.getContext(), "Selected: " + category, Toast.LENGTH_SHORT).show();
+
+            default:
+                // do nothing
+        }
+
     }
 
     public void onNothingSelected(AdapterView<?> arg0) {
