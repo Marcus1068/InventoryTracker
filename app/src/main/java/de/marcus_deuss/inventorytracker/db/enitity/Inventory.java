@@ -1,4 +1,4 @@
-package de.marcus_deuss.inventorytracker;
+package de.marcus_deuss.inventorytracker.db.enitity;
 
 
 import java.util.Date;
@@ -7,9 +7,6 @@ import java.util.Date;
  * Created by marcus on 22.03.18.
  */
 
-// TODO try catch
-// TODO DATE anstatt String
-// TODO AUTOINCREMENT bei Create table
 
 // contains inventory of an household
 public class Inventory {
@@ -58,7 +55,7 @@ public class Inventory {
     private String remark;               // addl. info
     private String ownerName;           // who owns this object in household
     private String categoryName;        // (Technology, Computer, Furniture etc.)
-    private String brandName;       // (Apple, Sony, Samsung, IKEA etc.)
+    private String brandName;            // (Apple, Sony, Samsung, IKEA etc.)
     private String roomName;            // location of object
 
     // Empty constructor

@@ -1,4 +1,4 @@
-package de.marcus_deuss.inventorytracker;
+package de.marcus_deuss.inventorytracker.db.dao;
 
 /**
  * Created by marcus on 24.03.18.
@@ -12,6 +12,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import de.marcus_deuss.inventorytracker.db.enitity.Inventory;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -36,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Creating Table
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "onCreate");
 
         try {
             db.execSQL(Inventory.CREATE_TABLE);
@@ -50,6 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "onUpgrade");
+
         // Drop older table if existed
         try {
             db.execSQL("DROP TABLE IF EXISTS " + Inventory.TABLE_NAME);
@@ -94,6 +99,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Adding new inventory to database
     // returns id of newly inserted row
     public long InsertInventory(Inventory inventory) {
+        Log.d(TAG, "InsertInventory");
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -122,6 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Getting single inventory item
     public Inventory getInventory(long id) {
+        Log.d(TAG, "getInventory");
+
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -165,6 +174,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Getting all Inventory items, sorted by inventory name first, then owner
     public List<Inventory> getInventoryList() {
+        Log.d(TAG, "getInventoryList");
+
         List<Inventory> inventoryList = new ArrayList<Inventory>();
 
         // Select All Query
@@ -209,6 +220,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Updating single inventory item
     public long updateInventory(Inventory inv) {
+        Log.d(TAG, "updateInventory");
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -234,6 +247,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Deleting single inventory item
     public void deleteInventory(Inventory inv) {
+        Log.d(TAG, "deleteInventory");
+
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(Inventory.TABLE_NAME, Inventory.COLUMN_ID + " = ?",
                 new String[] { String.valueOf(inv.getId()) });
@@ -243,6 +258,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Getting inventory Count
     public int getInventoryCount() {
+        Log.d(TAG, "getInventoryCount");
+
         String countQuery = "SELECT * FROM " + Inventory.TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
@@ -259,6 +276,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // insert some data into database as initial data
     public void generateSampleData() {
+        Log.d(TAG, "generateSampleData");
 
         Inventory inv = new Inventory((long) 0, "Esstisch", "12-10-2017", 399, null, "", 18, "nicht definiert", null, "keine Infos", "Marcus", "Möbel", "IKEA", "Wohnzimmer" );
         this.InsertInventory(inv);
@@ -278,6 +296,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // for debug purposes to get a dump of complete contents
     public void printDatabaseContents(){
+        Log.d(TAG, "printDatabaseContents");
 
         Log.d(TAG, "Number of rows ...");
         int count = this.getInventoryCount();

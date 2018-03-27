@@ -1,4 +1,4 @@
-package de.marcus_deuss.inventorytracker;
+package de.marcus_deuss.inventorytracker.ui;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.marcus_deuss.inventorytracker.R;
 
 public class EditInventoryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 

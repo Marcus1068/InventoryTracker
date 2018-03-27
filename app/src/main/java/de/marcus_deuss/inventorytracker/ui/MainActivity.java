@@ -1,4 +1,4 @@
-package de.marcus_deuss.inventorytracker;
+package de.marcus_deuss.inventorytracker.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,6 +25,10 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import de.marcus_deuss.inventorytracker.R;
+import de.marcus_deuss.inventorytracker.db.dao.DatabaseHelper;
+import de.marcus_deuss.inventorytracker.db.enitity.Inventory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
