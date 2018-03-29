@@ -1,0 +1,154 @@
+package de.marcus_deuss.inventorytracker.db;
+
+/**
+ * Created by marcus on 24.03.18.
+ */
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+
+    // All Static variables
+    // Database Version
+    private static final int DATABASE_VERSION = 1;
+
+    // Database Name
+    private static final String DATABASE_NAME = "inventoryManager.db";
+
+    // inventory table name
+    public static final String TABLE_NAME_INVENTORY = "inventory";
+
+
+    //  inventory Table Column names
+    public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
+    public static final String COLUMN_INVENTORYNAME = "inventoryname";
+    public static final String COLUMN_DATEOFPURCHASE = "dateofpurchase";
+    public static final String COLUMN_PRICE = "price";
+    public static final String COLUMN_INVOICE = "invoice";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static final String COLUMN_WARRANTY = "warranty";
+    public static final String COLUMN_SERIALNUMBER = "serialnumber";
+    public static final String COLUMN_IMAGE = "image";
+    public static final String COLUMN_REMARK = "remark";
+    public static final String COLUMN_OWNERNAME = "ownername";
+    public static final String COLUMN_CATEGORYNAME = "categoryname";
+    public static final String COLUMN_BRANDNAME = "brandname";
+    public static final String COLUMN_ROOMNAME = "roomname";
+
+    // Create table SQL query string
+    public static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_NAME_INVENTORY + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INVENTORYNAME + " TEXT,"
+            + COLUMN_DATEOFPURCHASE  + " DATE," + COLUMN_PRICE + " INTEGER,"
+            + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
+            + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
+            + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
+            + COLUMN_OWNERNAME + " TEXT," + COLUMN_CATEGORYNAME + " TEXT,"
+            + COLUMN_BRANDNAME + " TEXT," + COLUMN_ROOMNAME + " TEXT" + ")";
+
+
+    // category table name
+    public static final String TABLE_NAME_CATEGORY = "category";
+
+
+    // Create category table SQL query string
+    public static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORYNAME + " TEXT" + ")";
+
+
+
+    private static final String TAG = "InventoryTracker.DatabaseHelper";
+
+    // private SQLiteDatabase db;
+
+    private static DatabaseHelper instance;
+
+    public static synchronized DatabaseHelper getHelper(Context context) {
+        if (instance == null)
+            instance = new DatabaseHelper(context);
+        return instance;
+    }
+
+    private DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
+        // TODO evtl. uncomment
+        // db = this.getWritableDatabase();
+    }
+
+
+    // Creating Table
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        Log.d(TAG, "database onCreate");
+
+        try {
+            db.execSQL(CREATE_TABLE_CATEGORY);
+            db.execSQL(CREATE_TABLE_INVENTORY);
+            Log.d(TAG, "created tables ...");
+        }
+        catch (Exception ex){
+            Log.e(TAG, ex.getMessage());
+        }
+
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        Log.d(TAG, "database onOpen");
+
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
+    }
+
+    // Upgrading database
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d(TAG, "database onUpgrade");
+
+        // Drop older table if existed
+        try {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CATEGORY);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_INVENTORY);
+            // Create tables again
+            onCreate(db);
+
+            Log.d(TAG, "upgraded tables ...");
+        }
+        catch (Exception ex){
+            Log.e(TAG, ex.getMessage());
+        }
+    }
+/*
+    // for debug purposes to get a dump of complete contents
+    public static void printDatabaseContents(){
+        Log.d(TAG, "printDatabaseContents");
+
+        Log.d(TAG, "Number of rows ...");
+        int count = InventoryDAO.getInventoryCount();
+        String cnt = String.valueOf(count);
+        Log.d(TAG, cnt );
+
+        // print all rows
+        List<Inventory> inventoryList = new ArrayList<Inventory>();
+        for (Inventory inventory : inventoryList = InventoryDAO.getInventoryList()) {
+            Log.d(TAG, "NAME - " + inventory.getInventoryName() +
+                    " OWNER - " + inventory.getOwnerName() +
+                    " ID - " + String.valueOf(inventory.getId()) +
+                    " TIMEST. - " + inventory.getTimeStamp() +
+                    " BRAND - " + inventory.getBrandName() +
+                    " CAT - " + inventory.getCategoryName() +
+                    "DATEOFP - " + inventory.getDateOfPurchase() +
+                    " ROOM - " + inventory.getRoomName());
+        }
+    }
+    */
+}
+
+

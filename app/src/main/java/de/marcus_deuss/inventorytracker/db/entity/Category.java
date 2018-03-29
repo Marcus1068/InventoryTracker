@@ -1,17 +1,7 @@
 package de.marcus_deuss.inventorytracker.db.entity;
 
 public class Category {
-    // table name
-    public static final String TABLE_NAME = "category";
 
-
-    // Table Column names
-    public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
-    public static final String COLUMN_CATEGORYNAME = "categoryname";
-
-    // Create table SQL query string
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORYNAME + " TEXT" + ")";
 
     // private variables
     private long id;                       // database internal number, must be long!
@@ -40,5 +30,24 @@ public class Category {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    @Override
+    public String toString() {
+        return "id:" + id + ", name:" + categoryName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Category other = (Category) obj;
+        if (id != other.id)
+            return false;
+        return true;
     }
 }

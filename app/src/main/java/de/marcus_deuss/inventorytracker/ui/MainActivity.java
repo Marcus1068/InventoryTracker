@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import de.marcus_deuss.inventorytracker.R;
-import de.marcus_deuss.inventorytracker.db.dao.DatabaseHelper;
+import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
+import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.InventoryDAO;
 import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 
 public class MainActivity extends AppCompatActivity
@@ -39,14 +41,22 @@ public class MainActivity extends AppCompatActivity
     private SimpleCursorAdapter adapter;
     private Cursor cursor;
     private SimpleDateFormat dateFormat;
-
     private ListView overviewListView;
+
+    Inventory inventory = null;
+    private InventoryDAO inventoryDAO;
+    private CategoryDAO categoryDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
+
+        // init database elements
+        inventoryDAO = new InventoryDAO(this);
+        categoryDAO = new CategoryDAO(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,19 +79,26 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // init the sqlite database
-        db = new DatabaseHelper(this);
-
         // some sample data
         // TODO needs to be removed in final software
-        db.generateSampleData();
-        db.printDatabaseContents();
 
-        cursor = db.createListViewCursor();
+        long count = inventoryDAO.getInventoryCount();
+
+        // generate sample data into database only if no data available
+        if(count == 0){
+            inventoryDAO.generateInventoryData();
+        }
+
+
+        for (Inventory inventory1 : inventoryDAO.getInventoryList()) {
+            Log.d(TAG, "name = " + inventory1.getInventoryName());
+        }
+
+        cursor = inventoryDAO.createListViewCursor();
 
         overviewListView = (ListView) this.findViewById(R.id.listView1);
 
-        String[] anzeigeSpalten = new String[]{ Inventory.COLUMN_INVENTORYNAME, Inventory.COLUMN_ROOMNAME, Inventory.COLUMN_TIMESTAMP};
+        String[] anzeigeSpalten = new String[]{ DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_ROOMNAME, DatabaseHelper.COLUMN_TIMESTAMP};
         int[] anzeigeViews      = new int[]{ R.id.textViewInventoryName, R.id.textViewRoomName, R.id.textViewTimeStamp};
         adapter                 = new SimpleCursorAdapter(this, R.layout.listviewlayout, cursor,
                 anzeigeSpalten, anzeigeViews,
@@ -142,6 +159,7 @@ public class MainActivity extends AppCompatActivity
         if(cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
+
         if(db != null) {
             db.close();
         }

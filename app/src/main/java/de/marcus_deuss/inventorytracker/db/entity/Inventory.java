@@ -9,35 +9,6 @@ package de.marcus_deuss.inventorytracker.db.entity;
 // contains inventory of an household
 public class Inventory {
 
-    // table name
-    public static final String TABLE_NAME = "inventory";
-
-
-    //  Table Column names
-    public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
-    public static final String COLUMN_INVENTORYNAME = "inventoryname";
-    public static final String COLUMN_DATEOFPURCHASE = "dateofpurchase";
-    public static final String COLUMN_PRICE = "price";
-    public static final String COLUMN_INVOICE = "invoice";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
-    public static final String COLUMN_WARRANTY = "warranty";
-    public static final String COLUMN_SERIALNUMBER = "serialnumber";
-    public static final String COLUMN_IMAGE = "image";
-    public static final String COLUMN_REMARK = "remark";
-    public static final String COLUMN_OWNERNAME = "ownername";
-    public static final String COLUMN_CATEGORYNAME = "categoryname";
-    public static final String COLUMN_BRANDNAME = "brandname";
-    public static final String COLUMN_ROOMNAME = "roomname";
-
-    // Create table SQL query string
-    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INVENTORYNAME + " TEXT,"
-            + COLUMN_DATEOFPURCHASE  + " DATE," + COLUMN_PRICE + " INTEGER,"
-            + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
-            + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
-            + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
-            + COLUMN_OWNERNAME + " TEXT," + COLUMN_CATEGORYNAME + " TEXT,"
-            + COLUMN_BRANDNAME + " TEXT," + COLUMN_ROOMNAME + " TEXT" + ")";
 
 
     // private variables
@@ -197,6 +168,25 @@ public class Inventory {
 
     public void setBrandName(String brandName) {
         this.brandName = brandName;
+    }
+
+    @Override
+    public String toString() {
+        return "id:" + id + ", name:" + inventoryName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Inventory other = (Inventory) obj;
+        if (id != other.id)
+            return false;
+        return true;
     }
 }
 

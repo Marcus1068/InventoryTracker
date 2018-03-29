@@ -1,19 +1,11 @@
 package de.marcus_deuss.inventorytracker.db;
 
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import de.marcus_deuss.inventorytracker.db.entity.Inventory;
-
 /**
  * Generates data to pre-populate the database
  */
 public class DataGenerator {
-
+/*
     private static final String[] FIRST = new String[]{
             "Special edition", "New", "Cheap", "Quality", "Used"};
     private static final String[] SECOND = new String[]{
@@ -59,4 +51,5 @@ public class DataGenerator {
 
         return comments;
     }
+    */
 }
