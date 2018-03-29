@@ -13,7 +13,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import de.marcus_deuss.inventorytracker.db.enitity.Inventory;
+import de.marcus_deuss.inventorytracker.db.entity.Category;
+import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -25,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "inventoryManager.db";
 
-    private static final String TAG = "InventoryTracker";
+    private static final String TAG = "InventoryTracker.DatabaseHelper";
 
     private SQLiteDatabase db;
 
@@ -41,8 +42,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "onCreate");
 
         try {
+            db.execSQL(Category.CREATE_TABLE);
             db.execSQL(Inventory.CREATE_TABLE);
-            Log.d(TAG, "created table ..." + Inventory.CREATE_TABLE);
+            Log.d(TAG, "created tables ...");
         }
         catch (Exception ex){
             Log.e(TAG, ex.getMessage());
@@ -57,27 +59,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Drop older table if existed
         try {
+            db.execSQL("DROP TABLE IF EXISTS " + Category.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + Inventory.TABLE_NAME);
             // Create tables again
             onCreate(db);
 
-            Log.d(TAG, "upgraded table ..." + Inventory.CREATE_TABLE);
+            Log.d(TAG, "upgraded tables ...");
         }
         catch (Exception ex){
             Log.e(TAG, ex.getMessage());
         }
     }
 
-    /**
-     * Liefert Cursor zum Zugriff auf alle Einträge, alphabetisch geordnet nach Spalte Inventory.COLUMN_INVENTORYNAME
-     * @return
-     */
-    public Cursor createListViewCursor() {
-        Log.d(TAG, "createListViewCursor() ...");
-
-        String[] columns = new String[]{Inventory.COLUMN_ID, Inventory.COLUMN_INVENTORYNAME, Inventory.COLUMN_ROOMNAME, Inventory.COLUMN_TIMESTAMP};
-        return  db.query(Inventory.TABLE_NAME, columns, null, null, null, null, Inventory.COLUMN_INVENTORYNAME);
-    }
 
     // closing db
     @Override
@@ -92,6 +85,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super.close();
     }
 
+
+    /**
+     * Liefert Cursor zum Zugriff auf alle Einträge, alphabetisch geordnet nach Spalte Inventory.COLUMN_INVENTORYNAME
+     * @return
+     */
+    public Cursor createListViewCursor() {
+        Log.d(TAG, "createListViewCursor() ...");
+
+        String[] columns = new String[]{Inventory.COLUMN_ID, Inventory.COLUMN_INVENTORYNAME, Inventory.COLUMN_ROOMNAME, Inventory.COLUMN_TIMESTAMP};
+        return  db.query(Inventory.TABLE_NAME, columns, null, null, null, null, Inventory.COLUMN_INVENTORYNAME);
+    }
+
+
     /**
      * All CRUD(Create, Read, Update, Delete) Operations
      */
@@ -99,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Adding new inventory to database
     // returns id of newly inserted row
     public long InsertInventory(Inventory inventory) {
-        Log.d(TAG, "InsertInventory");
+        Log.d(TAG, "Insert Inventory");
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -126,6 +132,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
+
+
 
     // Getting single inventory item
     public Inventory getInventory(long id) {

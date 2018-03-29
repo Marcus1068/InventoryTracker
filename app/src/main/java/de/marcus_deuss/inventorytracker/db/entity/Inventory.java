@@ -1,7 +1,5 @@
-package de.marcus_deuss.inventorytracker.db.enitity;
+package de.marcus_deuss.inventorytracker.db.entity;
 
-
-import java.util.Date;
 
 /**
  * Created by marcus on 22.03.18.
@@ -11,11 +9,11 @@ import java.util.Date;
 // contains inventory of an household
 public class Inventory {
 
-    // inventory table name
+    // table name
     public static final String TABLE_NAME = "inventory";
 
 
-    // Inventory Table Column names
+    //  Table Column names
     public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
     public static final String COLUMN_INVENTORYNAME = "inventoryname";
     public static final String COLUMN_DATEOFPURCHASE = "dateofpurchase";

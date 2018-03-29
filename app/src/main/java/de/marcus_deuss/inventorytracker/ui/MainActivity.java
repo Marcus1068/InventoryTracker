@@ -28,7 +28,7 @@ import java.util.Locale;
 
 import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.dao.DatabaseHelper;
-import de.marcus_deuss.inventorytracker.db.enitity.Inventory;
+import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -132,11 +132,6 @@ public class MainActivity extends AppCompatActivity
             }
 
         });
-
-        // some sample data
-        // TODO needs to be removed in final software
-        db.generateSampleData();
-        db.printDatabaseContents();
     }
 
     // close cursor and database
