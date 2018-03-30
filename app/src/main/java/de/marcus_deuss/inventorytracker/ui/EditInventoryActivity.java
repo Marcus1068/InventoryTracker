@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.marcus_deuss.inventorytracker.R;
+import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.RoomDAO;
+import de.marcus_deuss.inventorytracker.db.entity.Category;
+import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 public class EditInventoryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -24,10 +28,10 @@ public class EditInventoryActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,22 +43,23 @@ public class EditInventoryActivity extends AppCompatActivity implements AdapterV
         });
 
         // room Spinner element
-        Spinner spinnerRoom = (Spinner) findViewById(R.id.spinnerRoom);
+        Spinner spinnerRoom = findViewById(R.id.spinnerRoom);
 
         // Spinner click listener
         spinnerRoom.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
-        List<String> rooms = new ArrayList<String>();
-        rooms.add("no Room");
-        rooms.add("Kitchen");
-        rooms.add("Living Room");
-        rooms.add("Cellar");
-        rooms.add("Bath Room");
-        rooms.add("Office");
+        RoomDAO roomList = new RoomDAO(this);
+
+        List<String> rooms = new ArrayList<>();
+
+        for (Room room : roomList.getRoomList()) {
+            rooms.add(room.getRoomName());
+        }
+
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapterRoom = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, rooms);
+        ArrayAdapter<String> dataAdapterRoom = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, rooms);
 
         // Drop down layout style - list view with radio button
         dataAdapterRoom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -63,22 +68,21 @@ public class EditInventoryActivity extends AppCompatActivity implements AdapterV
         spinnerRoom.setAdapter(dataAdapterRoom);
 
         // category Spinner element
-        Spinner spinnerCategory = (Spinner) findViewById(R.id.spinnerCategory);
+        Spinner spinnerCategory = findViewById(R.id.spinnerCategory);
 
         // Spinner click listener
         spinnerCategory.setOnItemSelectedListener(this);
 
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
-        categories.add("no Category");
-        categories.add("Furniture");
-        categories.add("Toys");
-        categories.add("Technology");
-        categories.add("Computer");
-        categories.add("Stuff");
+        CategoryDAO categoryList = new CategoryDAO(this);
+        List<String> categories = new ArrayList<>();
+
+        for (Category category : categoryList.getCategoryList()) {
+            categories.add(category.getCategoryName());
+        }
+
 
         // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapterCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> dataAdapterCategory = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
 
         // Drop down layout style - list view with radio button
         dataAdapterCategory.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
