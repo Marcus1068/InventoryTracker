@@ -20,7 +20,7 @@ import de.marcus_deuss.inventorytracker.db.entity.Category;
 
 public class CategoryDAO extends InventoryDBDAO{
 
-    private static final String TAG = "InventoryTracker.CategoryDAO";
+    private static final String TAG = "InventoryTracker";
 
     private static final String WHERE_ID_EQUALS = DatabaseHelper.COLUMN_ID
             + " =?";

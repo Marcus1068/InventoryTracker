@@ -6,10 +6,8 @@ package de.marcus_deuss.inventorytracker.db.entity;
  */
 
 
-// contains inventory of an household
+// contains inventory of a typical household
 public class Inventory {
-
-
 
     // private variables
     private long id;                       // database internal number, must be long!
@@ -55,7 +53,7 @@ public class Inventory {
         // this.categoryName = categoryName;
         this.brandName = brandName;
         this.roomName = roomName;
-        this.categoryId = categoryId;
+        this.categoryId = categoryId;           // reference to table category
     }
 
 

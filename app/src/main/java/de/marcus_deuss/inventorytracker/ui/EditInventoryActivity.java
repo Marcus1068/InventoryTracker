@@ -18,7 +18,7 @@ import de.marcus_deuss.inventorytracker.R;
 
 public class EditInventoryActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final String TAG = "InventoryTracker.EditActivityTracker";
+    private static final String TAG = "InventoryTracker";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

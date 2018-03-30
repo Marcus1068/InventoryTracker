@@ -15,7 +15,7 @@ import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 
 public class InventoryDAO extends InventoryDBDAO{
 
-    private static final String TAG = "InventoryTracker.InventoryDAO";
+    private static final String TAG = "InventoryTracker";
 
     public InventoryDAO(Context context) {
         super(context);

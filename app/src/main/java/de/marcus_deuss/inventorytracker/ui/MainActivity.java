@@ -36,7 +36,7 @@ import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "InventoryTracker.MainActivity";
+    private static final String TAG = "InventoryTracker";
 
     private DatabaseHelper db;
     private SimpleCursorAdapter adapter;
@@ -84,10 +84,8 @@ public class MainActivity extends AppCompatActivity
         // some sample data
         // TODO needs to be removed in final software
 
-        long count = inventoryDAO.getInventoryCount();
-
         // generate sample data into database only if no data available
-        if(count == 0){
+        if(inventoryDAO.getInventoryCount() == 0){
             categoryDAO.generateCategoryData();
             inventoryDAO.generateInventoryData();
         }

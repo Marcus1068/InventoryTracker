@@ -65,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + TABLE_NAME_CATEGORY + "(" + COLUMN_ID + ") " + ")";
 
 
-    private static final String TAG = "InventoryTracker.DatabaseHelper";
+    private static final String TAG = "InventoryTracker";
 
     // private SQLiteDatabase db;
 
