@@ -99,7 +99,7 @@ public class InventoryDAO extends InventoryDBDAO{
     public List<Inventory> getInventoryList() {
         Log.d(TAG, "getInventoryList");
 
-        List<Inventory> inventoryList = new ArrayList<Inventory>();
+        List<Inventory> inventoryList = new ArrayList<>();
 
         // Select All Query
         String selectQuery = "SELECT * FROM " + DatabaseHelper.TABLE_NAME_INVENTORY + " ORDER BY " +
@@ -131,6 +131,8 @@ public class InventoryDAO extends InventoryDBDAO{
                 inventoryList.add(inv);
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
 
         // return inventory list
         return inventoryList;

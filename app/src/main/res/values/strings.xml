@@ -12,4 +12,10 @@
     <string name="createdDatabaseMsg">Created database</string>
     <string name="title_activity_edit_inventory">Edit Inventory</string>
     <string name="notImplementedYet">Not implemented yet</string>
+    <string name="furniture">Furniture</string>
+    <string name="device">Device</string>
+    <string name="toys">Toys</string>
+    <string name="juwelry">Juwelry</string>
+    <string name="computer">Computer</string>
+    <string name="mobile">Mobile Phone</string>
 </resources>

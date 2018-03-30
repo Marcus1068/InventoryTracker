@@ -1,6 +1,6 @@
 package de.marcus_deuss.inventorytracker;
 
-/**
+/*
  * Android Application class. Used for accessing singletons.
  *
  * add "android:name" attribute in your AndroidManifest.xml's <application> tag
@@ -9,29 +9,25 @@ package de.marcus_deuss.inventorytracker;
 
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.util.Log;
 
 public class InventoryApp extends Application {
 
-    private static final String TAG = "InventoryTracker.App";
+    private static final String TAG = "InventoryTracker";
 
-    // private AppExecutors mAppExecutors;
+    // needed for translating string resources outside activities
+    public static Resources resources;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "App started!!!!!");
 
-        // mAppExecutors = new AppExecutors();
-    }
+        // access resources from all over the app
+        resources = getResources();
 
-/*        public AppDatabase getDatabase() {
-            return AppDatabase.getInstance(this, mAppExecutors);
-        }
 
-        public DataRepository getRepository() {
-            return DataRepository.getInstance(getDatabase());
-        }
     }
-*/
 }

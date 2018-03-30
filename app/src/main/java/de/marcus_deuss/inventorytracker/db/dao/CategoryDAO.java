@@ -12,10 +12,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.InventoryDBDAO;
 import de.marcus_deuss.inventorytracker.db.entity.Category;
 
+import static de.marcus_deuss.inventorytracker.InventoryApp.resources;
 
 
 public class CategoryDAO extends InventoryDBDAO{
@@ -91,7 +93,7 @@ public class CategoryDAO extends InventoryDBDAO{
     public List<Category> getCategoryList() {
         Log.d(TAG, "getCategoryList");
 
-        List<Category> categoryList = new ArrayList<Category>();
+        List<Category> categoryList = new ArrayList<>();
 
         // Select All Query
         String selectQuery = "SELECT * FROM " + DatabaseHelper.TABLE_NAME_CATEGORY + " ORDER BY " +
@@ -111,6 +113,8 @@ public class CategoryDAO extends InventoryDBDAO{
                 categoryList.add(inv);
             } while (cursor.moveToNext());
         }
+
+        cursor.close();
 
         // return inventory list
         return categoryList;
@@ -144,22 +148,22 @@ public class CategoryDAO extends InventoryDBDAO{
         Log.d(TAG, "generateCategoryData");
 
 
-        Category category = new Category((long) 1, "Möbel");
+        Category category = new Category((long) 1, resources.getString(R.string.furniture));
         this.saveCategory(category);
 
-        Category category2 = new Category((long) 2, "Technik");
+        Category category2 = new Category((long) 2, resources.getString(R.string.device));
         this.saveCategory(category2);
 
-        Category category3 = new Category((long) 3, "Spielzeug");
+        Category category3 = new Category((long) 3, resources.getString(R.string.toys));
         this.saveCategory(category3);
 
-        Category category4 = new Category((long) 4, "Schmuck");
+        Category category4 = new Category((long) 4, resources.getString(R.string.juwelry));
         this.saveCategory(category4);
 
-        Category category5 = new Category((long) 5, "Computer");
+        Category category5 = new Category((long) 5, resources.getString(R.string.computer));
         this.saveCategory(category5);
 
-        Category category6 = new Category((long) 6, "Handy");
+        Category category6 = new Category((long) 6, resources.getString(R.string.mobile));
         this.saveCategory(category6);
 
     }
