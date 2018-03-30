@@ -22,6 +22,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // inventory table name
     public static final String TABLE_NAME_INVENTORY = "inventory";
 
+    // category table name
+    public static final String TABLE_NAME_CATEGORY = "category";
+
+    // sort order string
+    public static final String TABLE_SORT_ORDER = " COLLATE NOCASE ASC";
 
     //  inventory Table Column names
     public static final String COLUMN_ID = "_id";    // should always be id, needed by some android classes
@@ -38,6 +43,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_CATEGORYNAME = "categoryname";
     public static final String COLUMN_BRANDNAME = "brandname";
     public static final String COLUMN_ROOMNAME = "roomname";
+    public static final String COLUMN_INVENTORY_CATEGORY_ID = "category_id";
+
+
+    // define create statements for all tables
+
+    // Create category table SQL query string
+    public static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORYNAME + " TEXT" + ")";
+
 
     // Create table SQL query string
     public static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_NAME_INVENTORY + "("
@@ -46,18 +60,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
             + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
             + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
-            + COLUMN_OWNERNAME + " TEXT," + COLUMN_CATEGORYNAME + " TEXT,"
-            + COLUMN_BRANDNAME + " TEXT," + COLUMN_ROOMNAME + " TEXT" + ")";
-
-
-    // category table name
-    public static final String TABLE_NAME_CATEGORY = "category";
-
-
-    // Create category table SQL query string
-    public static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
-            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORYNAME + " TEXT" + ")";
-
+            + COLUMN_OWNERNAME + " TEXT,"
+            + COLUMN_BRANDNAME + " TEXT," + COLUMN_ROOMNAME + " TEXT," + COLUMN_INVENTORY_CATEGORY_ID + " INTEGER," + " FOREIGN KEY(" + COLUMN_INVENTORY_CATEGORY_ID + ") REFERENCES "
+            + TABLE_NAME_CATEGORY + "(" + COLUMN_ID + ") " + ")";
 
 
     private static final String TAG = "InventoryTracker.DatabaseHelper";
@@ -114,8 +119,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Drop older table if existed
         try {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CATEGORY);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_INVENTORY);
+
+            // last tables to delete are foreign key tables
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CATEGORY);
+
             // Create tables again
             onCreate(db);
 

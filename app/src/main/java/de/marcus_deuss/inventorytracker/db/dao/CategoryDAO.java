@@ -9,9 +9,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.InventoryDBDAO;
 import de.marcus_deuss.inventorytracker.db.entity.Category;
+
+
 
 public class CategoryDAO extends InventoryDBDAO{
 
@@ -58,6 +63,59 @@ public class CategoryDAO extends InventoryDBDAO{
                 WHERE_ID_EQUALS, new String[] { category.getId() + "" });
     }
 
+    // Getting single category item
+    public Category getCategory(long id) {
+        Log.d(TAG, "getCategory");
+
+        Cursor cursor = database.query(DatabaseHelper.TABLE_NAME_CATEGORY,
+                new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_CATEGORYNAME},
+                DatabaseHelper.COLUMN_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        // prepare inventory object
+        Category category = new Category(
+                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)),
+                cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORYNAME))
+        );
+
+        // close the db connection
+        cursor.close();
+
+        return category;
+    }
+
+    // Getting all category items, sorted by category name
+    public List<Category> getCategoryList() {
+        Log.d(TAG, "getCategoryList");
+
+        List<Category> categoryList = new ArrayList<Category>();
+
+        // Select All Query
+        String selectQuery = "SELECT * FROM " + DatabaseHelper.TABLE_NAME_CATEGORY + " ORDER BY " +
+                DatabaseHelper.COLUMN_CATEGORYNAME + DatabaseHelper.TABLE_SORT_ORDER;
+
+
+        Cursor cursor = database.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Category inv = new Category();
+                inv.setId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
+                inv.setCategoryName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORYNAME)));
+
+                // Adding category to list
+                categoryList.add(inv);
+            } while (cursor.moveToNext());
+        }
+
+        // return inventory list
+        return categoryList;
+    }
+
     // Getting category Count
     public int getCategoryCount() {
         Log.d(TAG, "getCategoryCount");
@@ -72,5 +130,37 @@ public class CategoryDAO extends InventoryDBDAO{
 
         // return count
         return cnt;
+    }
+
+    public Cursor createCategoryListViewCursor() {
+        Log.d(TAG, "createCategoryListViewCursor() ...");
+
+        String[] columns = new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_CATEGORYNAME};
+        return  database.query(DatabaseHelper.TABLE_NAME_CATEGORY, columns, null, null, null, null, DatabaseHelper.COLUMN_CATEGORYNAME);
+    }
+
+    // insert some category data into database as initial data
+    public void generateCategoryData() {
+        Log.d(TAG, "generateCategoryData");
+
+
+        Category category = new Category((long) 1, "Möbel");
+        this.saveCategory(category);
+
+        Category category2 = new Category((long) 2, "Technik");
+        this.saveCategory(category2);
+
+        Category category3 = new Category((long) 3, "Spielzeug");
+        this.saveCategory(category3);
+
+        Category category4 = new Category((long) 4, "Schmuck");
+        this.saveCategory(category4);
+
+        Category category5 = new Category((long) 5, "Computer");
+        this.saveCategory(category5);
+
+        Category category6 = new Category((long) 6, "Handy");
+        this.saveCategory(category6);
+
     }
 }

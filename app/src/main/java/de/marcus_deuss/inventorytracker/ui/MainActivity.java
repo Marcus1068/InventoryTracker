@@ -30,6 +30,7 @@ import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
 import de.marcus_deuss.inventorytracker.db.dao.InventoryDAO;
+import de.marcus_deuss.inventorytracker.db.entity.Category;
 import de.marcus_deuss.inventorytracker.db.entity.Inventory;
 
 public class MainActivity extends AppCompatActivity
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity
     private SimpleDateFormat dateFormat;
     private ListView overviewListView;
 
-    Inventory inventory = null;
+    // Inventory inventory = null;
     private InventoryDAO inventoryDAO;
     private CategoryDAO categoryDAO;
 
@@ -53,9 +54,10 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
-        // init database elements
-        inventoryDAO = new InventoryDAO(this);
+        // init database elements, starting with foreign key tables like category table
         categoryDAO = new CategoryDAO(this);
+
+        inventoryDAO = new InventoryDAO(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -86,15 +88,20 @@ public class MainActivity extends AppCompatActivity
 
         // generate sample data into database only if no data available
         if(count == 0){
+            categoryDAO.generateCategoryData();
             inventoryDAO.generateInventoryData();
         }
 
-
-        for (Inventory inventory1 : inventoryDAO.getInventoryList()) {
-            Log.d(TAG, "name = " + inventory1.getInventoryName());
+        for (Category category : categoryDAO.getCategoryList()) {
+            Log.d(TAG, "cat id: " + category.getId() + ", name: " + category.getCategoryName());
         }
 
-        cursor = inventoryDAO.createListViewCursor();
+        for (Inventory inventory : inventoryDAO.getInventoryList()) {
+            Log.d(TAG, "inv id:" + inventory.getId() + ", name: " + inventory.getInventoryName() + ", cat id: " + inventory.getCategoryId());
+        }
+
+
+        cursor = inventoryDAO.createInventoryListViewCursor();
 
         overviewListView = (ListView) this.findViewById(R.id.listView1);
 
