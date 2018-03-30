@@ -128,12 +128,12 @@ public class CategoryDAO extends InventoryDBDAO{
 
         Cursor cursor = database.rawQuery(countQuery, null);
 
-        int cnt = cursor.getCount();
+        int count = cursor.getCount();
 
         cursor.close();
 
         // return count
-        return cnt;
+        return count;
     }
 
     public Cursor createCategoryListViewCursor() {

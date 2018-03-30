@@ -1,6 +1,6 @@
 package de.marcus_deuss.inventorytracker.db;
 
-/**
+/*
  * Created by marcus on 24.03.18.
  */
 
@@ -25,6 +25,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // category table name
     public static final String TABLE_NAME_CATEGORY = "category";
 
+    // room table name
+    public static final String TABLE_NAME_ROOM = "room";
+
     // sort order string
     public static final String TABLE_SORT_ORDER = " COLLATE NOCASE ASC";
 
@@ -44,25 +47,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_BRANDNAME = "brandname";
     public static final String COLUMN_ROOMNAME = "roomname";
     public static final String COLUMN_INVENTORY_CATEGORY_ID = "category_id";
+    public static final String COLUMN_INVENTORY_ROOM_ID = "room_id";
 
 
     // define create statements for all tables
 
     // Create category table SQL query string
-    public static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
+    private static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORYNAME + " TEXT" + ")";
 
+    // Create room table SQL query string
+    private static final String CREATE_TABLE_ROOM = "CREATE TABLE " + TABLE_NAME_ROOM + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_ROOMNAME + " TEXT" + ")";
 
     // Create table SQL query string
-    public static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_NAME_INVENTORY + "("
+    private static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_NAME_INVENTORY + "("
             + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_INVENTORYNAME + " TEXT,"
             + COLUMN_DATEOFPURCHASE  + " DATE," + COLUMN_PRICE + " INTEGER,"
             + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
             + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
             + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
             + COLUMN_OWNERNAME + " TEXT,"
-            + COLUMN_BRANDNAME + " TEXT," + COLUMN_ROOMNAME + " TEXT," + COLUMN_INVENTORY_CATEGORY_ID + " INTEGER," + " FOREIGN KEY(" + COLUMN_INVENTORY_CATEGORY_ID + ") REFERENCES "
-            + TABLE_NAME_CATEGORY + "(" + COLUMN_ID + ") " + ")";
+            + COLUMN_BRANDNAME + " TEXT,"
+            + COLUMN_INVENTORY_ROOM_ID + " INTEGER," + COLUMN_INVENTORY_CATEGORY_ID + " INTEGER,"
+            + " FOREIGN KEY(" + COLUMN_INVENTORY_CATEGORY_ID + ") REFERENCES " + TABLE_NAME_CATEGORY + "(" + COLUMN_ID + "), "
+            + " FOREIGN KEY(" + COLUMN_INVENTORY_ROOM_ID + ") REFERENCES " + TABLE_NAME_ROOM + "(" + COLUMN_ID +")) ";
 
 
     private static final String TAG = "InventoryTracker";
@@ -91,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "database onCreate");
 
         try {
+            db.execSQL(CREATE_TABLE_ROOM);
             db.execSQL(CREATE_TABLE_CATEGORY);
             db.execSQL(CREATE_TABLE_INVENTORY);
             Log.d(TAG, "created tables ...");
@@ -124,6 +134,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // last tables to delete are foreign key tables
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CATEGORY);
 
+            // last tables to delete are foreign key tables
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_ROOM);
+
             // Create tables again
             onCreate(db);
 
@@ -133,30 +146,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.e(TAG, ex.getMessage());
         }
     }
-/*
-    // for debug purposes to get a dump of complete contents
-    public static void printDatabaseContents(){
-        Log.d(TAG, "printDatabaseContents");
-
-        Log.d(TAG, "Number of rows ...");
-        int count = InventoryDAO.getInventoryCount();
-        String cnt = String.valueOf(count);
-        Log.d(TAG, cnt );
-
-        // print all rows
-        List<Inventory> inventoryList = new ArrayList<Inventory>();
-        for (Inventory inventory : inventoryList = InventoryDAO.getInventoryList()) {
-            Log.d(TAG, "NAME - " + inventory.getInventoryName() +
-                    " OWNER - " + inventory.getOwnerName() +
-                    " ID - " + String.valueOf(inventory.getId()) +
-                    " TIMEST. - " + inventory.getTimeStamp() +
-                    " BRAND - " + inventory.getBrandName() +
-                    " CAT - " + inventory.getCategoryName() +
-                    "DATEOFP - " + inventory.getDateOfPurchase() +
-                    " ROOM - " + inventory.getRoomName());
-        }
-    }
-    */
 }
-
-

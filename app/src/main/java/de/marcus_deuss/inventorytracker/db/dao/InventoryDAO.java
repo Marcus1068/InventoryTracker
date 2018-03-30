@@ -21,7 +21,7 @@ public class InventoryDAO extends InventoryDBDAO{
         super(context);
     }
 
-    /**
+    /*
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
@@ -43,11 +43,11 @@ public class InventoryDAO extends InventoryDBDAO{
         values.put(DatabaseHelper.COLUMN_REMARK, inventory.getRemark());
         values.put(DatabaseHelper.COLUMN_OWNERNAME, inventory.getOwnerName());
         values.put(DatabaseHelper.COLUMN_BRANDNAME, inventory.getBrandName());
-        values.put(DatabaseHelper.COLUMN_ROOMNAME, inventory.getRoomName());
+
 
         // reference to foreign keys
         values.put(DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID, inventory.getCategoryId());    // reference foreign key
-
+        values.put(DatabaseHelper.COLUMN_INVENTORY_ROOM_ID, inventory.getRoomId());
         return database.insert(DatabaseHelper.TABLE_NAME_INVENTORY, null, values);
     }
 
@@ -62,7 +62,7 @@ public class InventoryDAO extends InventoryDBDAO{
                         DatabaseHelper.COLUMN_DATEOFPURCHASE, DatabaseHelper.COLUMN_PRICE, DatabaseHelper.COLUMN_INVOICE,
                         DatabaseHelper.COLUMN_TIMESTAMP, DatabaseHelper.COLUMN_WARRANTY, DatabaseHelper.COLUMN_SERIALNUMBER,
                         DatabaseHelper.COLUMN_IMAGE, DatabaseHelper.COLUMN_REMARK, DatabaseHelper.COLUMN_OWNERNAME,
-                        DatabaseHelper.COLUMN_BRANDNAME, DatabaseHelper.COLUMN_ROOMNAME, DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID},
+                        DatabaseHelper.COLUMN_BRANDNAME, DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID, DatabaseHelper.COLUMN_INVENTORY_ROOM_ID},
                 DatabaseHelper.COLUMN_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
@@ -83,8 +83,9 @@ public class InventoryDAO extends InventoryDBDAO{
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_REMARK)),
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_OWNERNAME)),
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_BRANDNAME)),
-                cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ROOMNAME)),
-                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID))
+
+                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_INVENTORY_ROOM_ID))
         );
 
         // close the db connection
@@ -124,8 +125,9 @@ public class InventoryDAO extends InventoryDBDAO{
                 inv.setRemark(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_REMARK)));
                 inv.setOwnerName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_OWNERNAME)));
                 inv.setBrandName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_BRANDNAME)));
-                inv.setRoomName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ROOMNAME)));
+
                 inv.setCategoryId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID)));
+                inv.setRoomId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_INVENTORY_ROOM_ID)));
 
                 // Adding inventory to list
                 inventoryList.add(inv);
@@ -154,8 +156,9 @@ public class InventoryDAO extends InventoryDBDAO{
         values.put(DatabaseHelper.COLUMN_REMARK, inv.getRemark());
         values.put(DatabaseHelper.COLUMN_OWNERNAME, inv.getOwnerName());
         values.put(DatabaseHelper.COLUMN_BRANDNAME, inv.getBrandName());
-        values.put(DatabaseHelper.COLUMN_ROOMNAME, inv.getRoomName());
+
         values.put(DatabaseHelper.COLUMN_INVENTORY_CATEGORY_ID, inv.getCategoryId());
+        values.put(DatabaseHelper.COLUMN_INVENTORY_ROOM_ID, inv.getRoomId());
 
         // updating row
         return database.update(DatabaseHelper.TABLE_NAME_INVENTORY, values, DatabaseHelper.COLUMN_ID + " = ?",
@@ -182,23 +185,23 @@ public class InventoryDAO extends InventoryDBDAO{
 
         Cursor cursor = database.rawQuery(countQuery, null);
 
-        int cnt = cursor.getCount();
+        int count = cursor.getCount();
 
         cursor.close();
 
         // return count
-        return cnt;
+        return count;
     }
 
 
-    /**
+    /*
      * Liefert Cursor zum Zugriff auf alle Einträge, alphabetisch geordnet nach Spalte Inventory.COLUMN_INVENTORYNAME
-     * @return
+     *
      */
     public Cursor createInventoryListViewCursor() {
         Log.d(TAG, "createInventoryListViewCursor() ...");
 
-        String[] columns = new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_ROOMNAME, DatabaseHelper.COLUMN_TIMESTAMP};
+        String[] columns = new String[]{DatabaseHelper.COLUMN_ID, DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_BRANDNAME, DatabaseHelper.COLUMN_TIMESTAMP};
         return  database.query(DatabaseHelper.TABLE_NAME_INVENTORY, columns, null, null, null, null, DatabaseHelper.COLUMN_INVENTORYNAME);
     }
 
@@ -233,23 +236,23 @@ public class InventoryDAO extends InventoryDBDAO{
 
 
         Inventory inv1 = new Inventory((long) 0, "Esstisch", "12-10-2017", 399, null, "",
-                18, "nicht definiert", null, "keine Infos", "Marcus", "IKEA", "Wohnzimmer", 1);
+                18, "nicht definiert", null, "keine Infos", "Marcus", "IKEA", 5, 1);
         this.saveInventory(inv1);
 
         Inventory inv2 = new Inventory((long) 0, "Macbook Pro 13", "12-10-2016", 2399, null, "",
-                24, "nicht definiert", null, "keine Infos", "Marcus", "iMac", "Büro", 5 );
+                24, "nicht definiert", null, "keine Infos", "Marcus", "iMac", 5, 5 );
         this.saveInventory(inv2);
 
         Inventory inv3 = new Inventory((long) 0, "Thermomix", "12-09-2016", 1099, null,  "",
-                24, "nicht definiert", null, "keine Infos", "Sandra", "Thermomix", "Küche", 2 );
+                24, "nicht definiert", null, "keine Infos", "Sandra", "Thermomix", 1, 2 );
         this.saveInventory(inv3);
 
         Inventory inv4 = new Inventory((long) 0, "Fritzbox 7590", "10-09-2017", 329, null,  "",
-                12, "nicht definiert", null, "keine Infos", "Marcus", "AVM", "Wohnzimmer", 2 );
+                12, "nicht definiert", null, "keine Infos", "Marcus", "AVM", 5, 2 );
         this.saveInventory(inv4);
 
         Inventory inv5 = new Inventory((long) 0, "FritzWLAN 1730", "12-09-2016", 99, null,  "",
-                24, "nicht definiert", null, "keine Infos", "Marcus", "AVM", "Büro", 2 );
+                24, "nicht definiert", null, "keine Infos", "Marcus", "AVM", 2, 2 );
         this.saveInventory(inv5);
     }
 }

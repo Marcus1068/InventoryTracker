@@ -1,7 +1,7 @@
 package de.marcus_deuss.inventorytracker.db;
 
 
-/**
+/*
  * Generates data to pre-populate the database
  */
 public class DataGenerator {

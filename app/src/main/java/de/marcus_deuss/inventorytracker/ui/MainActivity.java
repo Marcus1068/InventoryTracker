@@ -30,8 +30,10 @@ import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
 import de.marcus_deuss.inventorytracker.db.dao.InventoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.RoomDAO;
 import de.marcus_deuss.inventorytracker.db.entity.Category;
 import de.marcus_deuss.inventorytracker.db.entity.Inventory;
+import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,9 +46,10 @@ public class MainActivity extends AppCompatActivity
     private SimpleDateFormat dateFormat;
     private ListView overviewListView;
 
-    // Inventory inventory = null;
+    // entity objects
     private InventoryDAO inventoryDAO;
     private CategoryDAO categoryDAO;
+    private RoomDAO roomDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,8 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
-        // init database elements, starting with foreign key tables like category table
+        // init database elements, starting with foreign key tables like category and room table
+        roomDAO = new RoomDAO(this);
         categoryDAO = new CategoryDAO(this);
 
         inventoryDAO = new InventoryDAO(this);
@@ -81,13 +85,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // some sample data
-        // TODO needs to be removed in final software
 
-        // generate sample data into database only if no data available
+        // generate initial data into database only if no data available
         if(inventoryDAO.getInventoryCount() == 0){
+            roomDAO.generateRoomData();
             categoryDAO.generateCategoryData();
             inventoryDAO.generateInventoryData();
+        }
+
+        // TODO need to remove for final software
+        for (Room room : roomDAO.getRoomList()) {
+            Log.d(TAG, "room id: " + room.getId() + ", name: " + room.getRoomName());
         }
 
         for (Category category : categoryDAO.getCategoryList()) {
@@ -95,7 +103,8 @@ public class MainActivity extends AppCompatActivity
         }
 
         for (Inventory inventory : inventoryDAO.getInventoryList()) {
-            Log.d(TAG, "inv id:" + inventory.getId() + ", name: " + inventory.getInventoryName() + ", cat id: " + inventory.getCategoryId());
+            Log.d(TAG, "inv id:" + inventory.getId() + ", name: " + inventory.getInventoryName() + ", cat id: "
+                    + inventory.getCategoryId() + ", room id: " + inventory.getRoomId());
         }
 
 
@@ -103,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         overviewListView = (ListView) this.findViewById(R.id.listView1);
 
-        String[] anzeigeSpalten = new String[]{ DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_ROOMNAME, DatabaseHelper.COLUMN_TIMESTAMP};
+        String[] anzeigeSpalten = new String[]{ DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_BRANDNAME, DatabaseHelper.COLUMN_TIMESTAMP};
         int[] anzeigeViews      = new int[]{ R.id.textViewInventoryName, R.id.textViewRoomName, R.id.textViewTimeStamp};
         adapter                 = new SimpleCursorAdapter(this, R.layout.listviewlayout, cursor,
                 anzeigeSpalten, anzeigeViews,
@@ -123,7 +132,9 @@ public class MainActivity extends AppCompatActivity
                             return true;
                         }
                     }
-                    catch(Exception ex) {}
+                    catch(Exception ex) {
+                        Log.e(TAG, ex.getMessage());
+                    }
                 }
 
                 return false; //keine Änderung

@@ -18,4 +18,10 @@
     <string name="juwelry">Juwelry</string>
     <string name="computer">Computer</string>
     <string name="mobile">Mobile Phone</string>
+    <string name="kitchen">Kitchen</string>
+    <string name="office">Office</string>
+    <string name="garden">Garden</string>
+    <string name="basement">Basement</string>
+    <string name="livingroom">Living Room</string>
+    <string name="bedroom">Bedroom</string>
 </resources>
