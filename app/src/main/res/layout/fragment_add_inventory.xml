@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent" >
+tools:context=".ui.AddInventoryFragment">
+
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp" >
+
+    <EditText
+        android:id="@+id/etxt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Hinweis"
+        android:nextFocusDown="@+id/etxt_dob"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/etxt_dob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etxt_name"
+        android:hint="noch einer"
+        android:nextFocusDown="@+id/etxt_salary"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/etxt_salary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etxt_dob"
+        android:hint="und noch einer"
+        android:inputType="numberDecimal"
+        android:singleLine="true" />
+
+    <Spinner
+        android:id="@+id/spinner_dept"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etxt_salary" />
+
+    <LinearLayout
+        android:id="@+id/layout_submit"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_dept"
+        android:layout_margin="5dp"
+        android:orientation="horizontal"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/button_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@android:string/ok" />
+
+        <Button
+            android:id="@+id/button_reset"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Blabla" />
+    </LinearLayout>
+</RelativeLayout>
+
+</ScrollView>

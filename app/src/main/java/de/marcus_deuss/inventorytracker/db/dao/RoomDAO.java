@@ -72,7 +72,7 @@ public class RoomDAO extends InventoryDBDAO{
         if (cursor != null)
             cursor.moveToFirst();
 
-        // prepare inventory object
+        // prepare room object
         Room room = new Room(
                 cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ROOMNAME))
@@ -104,14 +104,14 @@ public class RoomDAO extends InventoryDBDAO{
                 room.setId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
                 room.setRoomName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ROOMNAME)));
 
-                // Adding category to list
+                // Adding  to list
                 roomList.add(room);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        // return inventory list
+        // return list
         return roomList;
     }
 

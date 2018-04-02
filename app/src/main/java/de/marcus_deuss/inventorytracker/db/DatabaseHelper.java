@@ -28,6 +28,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // room table name
     public static final String TABLE_NAME_ROOM = "room";
 
+    // room table name
+    public static final String TABLE_NAME_OWNER = "owner";
+
+    // room table name
+    public static final String TABLE_NAME_BRAND = "brand";
+
     // sort order string
     public static final String TABLE_SORT_ORDER = " COLLATE NOCASE ASC";
 
@@ -48,9 +54,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ROOMNAME = "roomname";
     public static final String COLUMN_INVENTORY_CATEGORY_ID = "category_id";
     public static final String COLUMN_INVENTORY_ROOM_ID = "room_id";
+    public static final String COLUMN_INVENTORY_OWNER_ID = "owner_id";
+    public static final String COLUMN_INVENTORY_BRAND_ID = "brand_id";
 
 
     // define create statements for all tables
+
+    // Create owner table SQL query string
+    private static final String CREATE_TABLE_OWNER = "CREATE TABLE " + TABLE_NAME_OWNER + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_OWNERNAME + " TEXT" + ")";
+
+    // Create brand table SQL query string
+    private static final String CREATE_TABLE_BRAND = "CREATE TABLE " + TABLE_NAME_BRAND + "("
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_BRANDNAME + " TEXT" + ")";
 
     // Create category table SQL query string
     private static final String CREATE_TABLE_CATEGORY = "CREATE TABLE " + TABLE_NAME_CATEGORY + "("
@@ -67,11 +83,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_INVOICE + " BLOB," + COLUMN_TIMESTAMP + " DATE DEFAULT CURRENT_TIMESTAMP,"
             + COLUMN_WARRANTY + " INTEGER," + COLUMN_SERIALNUMBER + " TEXT,"
             + COLUMN_IMAGE + " BLOB," + COLUMN_REMARK + " TEXT,"
-            + COLUMN_OWNERNAME + " TEXT,"
-            + COLUMN_BRANDNAME + " TEXT,"
-            + COLUMN_INVENTORY_ROOM_ID + " INTEGER," + COLUMN_INVENTORY_CATEGORY_ID + " INTEGER,"
+            + COLUMN_INVENTORY_OWNER_ID + " INTEGER,"
+            + COLUMN_INVENTORY_BRAND_ID + " INTEGER,"
+            + COLUMN_INVENTORY_ROOM_ID + " INTEGER,"
+            + COLUMN_INVENTORY_CATEGORY_ID + " INTEGER,"
             + " FOREIGN KEY(" + COLUMN_INVENTORY_CATEGORY_ID + ") REFERENCES " + TABLE_NAME_CATEGORY + "(" + COLUMN_ID + "), "
-            + " FOREIGN KEY(" + COLUMN_INVENTORY_ROOM_ID + ") REFERENCES " + TABLE_NAME_ROOM + "(" + COLUMN_ID +")) ";
+            + " FOREIGN KEY(" + COLUMN_INVENTORY_ROOM_ID + ") REFERENCES " + TABLE_NAME_ROOM + "(" + COLUMN_ID +"), "
+            + " FOREIGN KEY(" + COLUMN_INVENTORY_BRAND_ID + ") REFERENCES " + TABLE_NAME_BRAND + "(" + COLUMN_ID +"), "
+            + " FOREIGN KEY(" + COLUMN_INVENTORY_OWNER_ID + ") REFERENCES " + TABLE_NAME_OWNER + "(" + COLUMN_ID +")) ";
 
 
     private static final String TAG = "InventoryTracker";
@@ -100,6 +119,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "database onCreate");
 
         try {
+            db.execSQL(CREATE_TABLE_OWNER);
+            db.execSQL(CREATE_TABLE_BRAND);
             db.execSQL(CREATE_TABLE_ROOM);
             db.execSQL(CREATE_TABLE_CATEGORY);
             db.execSQL(CREATE_TABLE_INVENTORY);
@@ -136,6 +157,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             // last tables to delete are foreign key tables
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_ROOM);
+
+            // last tables to delete are foreign key tables
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_BRAND);
+
+            // last tables to delete are foreign key tables
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_OWNER);
 
             // Create tables again
             onCreate(db);

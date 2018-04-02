@@ -77,7 +77,7 @@ public class CategoryDAO extends InventoryDBDAO{
         if (cursor != null)
             cursor.moveToFirst();
 
-        // prepare inventory object
+        // prepare category object
         Category category = new Category(
                 cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)),
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORYNAME))
@@ -105,18 +105,18 @@ public class CategoryDAO extends InventoryDBDAO{
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                Category inv = new Category();
-                inv.setId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
-                inv.setCategoryName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORYNAME)));
+                Category category = new Category();
+                category.setId(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID)));
+                category.setCategoryName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_CATEGORYNAME)));
 
                 // Adding category to list
-                categoryList.add(inv);
+                categoryList.add(category);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        // return inventory list
+        // return list
         return categoryList;
     }
 
@@ -165,6 +165,9 @@ public class CategoryDAO extends InventoryDBDAO{
 
         Category category6 = new Category((long) 6, resources.getString(R.string.mobile));
         this.saveCategory(category6);
+
+        Category category7 = new Category((long) 6, resources.getString(R.string.unknownCategory));
+        this.saveCategory(category7);
 
     }
 }

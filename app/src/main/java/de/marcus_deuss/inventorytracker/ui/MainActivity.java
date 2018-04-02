@@ -1,5 +1,6 @@
 package de.marcus_deuss.inventorytracker.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,15 +30,21 @@ import java.util.Locale;
 
 import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
+import de.marcus_deuss.inventorytracker.db.dao.BrandDAO;
 import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
 import de.marcus_deuss.inventorytracker.db.dao.InventoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.OwnerDAO;
 import de.marcus_deuss.inventorytracker.db.dao.RoomDAO;
+import de.marcus_deuss.inventorytracker.db.entity.Brand;
 import de.marcus_deuss.inventorytracker.db.entity.Category;
 import de.marcus_deuss.inventorytracker.db.entity.Inventory;
+import de.marcus_deuss.inventorytracker.db.entity.Owner;
 import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private AddInventoryFragment addInventoryFragment;
 
     private static final String TAG = "InventoryTracker";
 
@@ -50,6 +58,8 @@ public class MainActivity extends AppCompatActivity
     private InventoryDAO inventoryDAO;
     private CategoryDAO categoryDAO;
     private RoomDAO roomDAO;
+    private OwnerDAO ownerDAO;
+    private BrandDAO brandDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +68,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // init database elements, starting with foreign key tables like category and room table
+        brandDAO = new BrandDAO(this);
+        ownerDAO = new OwnerDAO(this);
         roomDAO = new RoomDAO(this);
         categoryDAO = new CategoryDAO(this);
 
@@ -88,12 +100,22 @@ public class MainActivity extends AppCompatActivity
 
         // generate initial data into database only if no data available
         if(inventoryDAO.getInventoryCount() == 0){
+            ownerDAO.generateOwnerData();
+            brandDAO.generateBrandData();
             roomDAO.generateRoomData();
             categoryDAO.generateCategoryData();
             inventoryDAO.generateInventoryData();
         }
 
         // TODO need to remove for final software
+        for (Owner owner : ownerDAO.getOwnerList()) {
+            Log.d(TAG, "owner id: " + owner.getId() + ", name: " + owner.getOwnerName());
+        }
+
+        for (Brand brand : brandDAO.getBrandList()) {
+            Log.d(TAG, "brand id: " + brand.getId() + ", name: " + brand.getBrandName());
+        }
+
         for (Room room : roomDAO.getRoomList()) {
             Log.d(TAG, "room id: " + room.getId() + ", name: " + room.getRoomName());
         }
@@ -103,24 +125,24 @@ public class MainActivity extends AppCompatActivity
         }
 
         for (Inventory inventory : inventoryDAO.getInventoryList()) {
-            Log.d(TAG, "inv id:" + inventory.getId() + ", name: " + inventory.getInventoryName() + ", cat id: "
-                    + inventory.getCategoryId() + ", room id: " + inventory.getRoomId());
+            Log.d(TAG, "inv id:" + inventory.getId() + ", name: " + inventory.getInventoryName() + ", cat: "
+                    + inventory.getCategoryId() + ", room: " + inventory.getRoomId() + ", brand: " + inventory.getBrandId()
+            + ", owner: " + inventory.getOwnerId());
         }
 
 
         cursor = inventoryDAO.createInventoryListViewCursor();
 
-        overviewListView = (ListView) this.findViewById(R.id.listView1);
+        overviewListView = this.findViewById(R.id.listView1);
 
-        String[] anzeigeSpalten = new String[]{ DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_BRANDNAME, DatabaseHelper.COLUMN_TIMESTAMP};
-        int[] anzeigeViews      = new int[]{ R.id.textViewInventoryName, R.id.textViewRoomName, R.id.textViewTimeStamp};
-        adapter                 = new SimpleCursorAdapter(this, R.layout.listviewlayout, cursor,
-                anzeigeSpalten, anzeigeViews,
+        String[] anzeigeSpalten = new String[]{ DatabaseHelper.COLUMN_INVENTORYNAME, DatabaseHelper.COLUMN_TIMESTAMP};
+        int[] anzeigeViews      = new int[]{ R.id.textViewInventoryName, R.id.textViewTimeStamp};
+        adapter                 = new SimpleCursorAdapter(this, R.layout.listviewlayout, cursor, anzeigeSpalten, anzeigeViews,
                 CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER );
 
         adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                if (columnIndex == 3) {
+                if (columnIndex == 2) {
                     // timeStamp umformatieren
                     try {
                         long datum = cursor.getLong(columnIndex);
@@ -192,8 +214,16 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            // TODO need to be changed
+            //Shows an alert dialog on quit
+            onShowQuitDialog();
+
+            // super.onBackPressed();
+
+
         }
+
+
     }
 
     @Override
@@ -264,6 +294,27 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START, true);
 
         return true;
+    }
+
+    public void onShowQuitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+
+        builder.setMessage(R.string.doyouwanttoquit);
+        builder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        finish();
+                    }
+                });
+        builder.setNegativeButton(android.R.string.no,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        builder.create().show();
     }
 
     // send an email and check for preconditions

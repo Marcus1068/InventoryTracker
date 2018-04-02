@@ -24,4 +24,20 @@
     <string name="basement">Basement</string>
     <string name="livingroom">Living Room</string>
     <string name="bedroom">Bedroom</string>
+    <string name="doyouwanttoquit">Do You Want To Quit?</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ikeaBrand">IKEA</string>
+    <string name="appleBrand">Apple</string>
+    <string name="samsungBrand">Samsung</string>
+    <string name="sonyBrand">Sony</string>
+    <string name="weberBrand">Weber</string>
+    <string name="unknownBrand"><![CDATA[<unknown>]]></string>
+    <string name="person1Owner">Father</string>
+    <string name="person2Owner">Mother</string>
+    <string name="person3Owner">Son</string>
+    <string name="person4Owner">Daugther</string>
+    <string name="unknownOwner"><![CDATA[<no person>]]></string>
+    <string name="unknownCategory"><![CDATA[<unknown category>]]></string>
 </resources>
