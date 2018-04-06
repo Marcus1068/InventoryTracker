@@ -1,71 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="match_parent" >
-tools:context=".ui.AddInventoryFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-<RelativeLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp" >
 
-    <EditText
-        android:id="@+id/etxt_name"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Hinweis"
-        android:nextFocusDown="@+id/etxt_dob"
-        android:singleLine="true" />
+        android:layout_margin="5dp">
 
-    <EditText
-        android:id="@+id/etxt_dob"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etxt_name"
-        android:hint="noch einer"
-        android:nextFocusDown="@+id/etxt_salary"
-        android:singleLine="true" />
+        <EditText
+            android:id="@+id/etxt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:ems="10"
+            android:hint="Inventar"
+            android:inputType="textCapWords"
+            android:nextFocusDown="@+id/etxt_dob"
+            android:singleLine="true"
+            app:layout_constraintStart_toEndOf="@+id/textView_invenory"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/etxt_salary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etxt_dob"
-        android:hint="und noch einer"
-        android:inputType="numberDecimal"
-        android:singleLine="true" />
+        <EditText
+            android:id="@+id/etxt_dob"
+            android:layout_width="213dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:hint="Kaufpreis"
+            android:inputType="number"
+            android:nextFocusDown="@+id/etxt_salary"
+            android:singleLine="true"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@+id/etxt_name" />
 
-    <Spinner
-        android:id="@+id/spinner_dept"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etxt_salary" />
+        <Spinner
+            android:id="@+id/spinner_dept"
+            android:layout_width="206dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toEndOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/etxt_dob" />
 
-    <LinearLayout
-        android:id="@+id/layout_submit"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner_dept"
-        android:layout_margin="5dp"
-        android:orientation="horizontal"
-        android:weightSum="2" >
 
         <Button
             android:id="@+id/button_add"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginEnd="135dp"
+            android:layout_marginStart="20dp"
             android:enabled="false"
-            android:text="@android:string/ok" />
+            android:text="@android:string/ok"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_reset"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/button_reset"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Blabla" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="49dp"
+            android:text="Foto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+        <TextView
+            android:id="@+id/textView_invenory"
+            android:layout_width="85dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="7dp"
+            android:text="Inventory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="69dp"
+            android:layout_height="46dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_invenory" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="79dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
+            android:text="Raum"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="138dp"
+            android:layout_height="123dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="169dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_dept"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

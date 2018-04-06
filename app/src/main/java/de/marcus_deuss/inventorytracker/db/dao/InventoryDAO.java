@@ -3,15 +3,23 @@ package de.marcus_deuss.inventorytracker.db.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.marcus_deuss.inventorytracker.InventoryApp;
+import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.InventoryDBDAO;
 import de.marcus_deuss.inventorytracker.db.entity.Inventory;
-
+import static de.marcus_deuss.inventorytracker.InventoryApp.resources;
 
 public class InventoryDAO extends InventoryDBDAO{
 
@@ -234,25 +242,46 @@ public class InventoryDAO extends InventoryDBDAO{
     public void generateInventoryData() {
         Log.d(TAG, "generateInventoryData");
 
+        // TODO muss noch überarbeitet werden
+        Drawable image = resources.getDrawable(R.drawable.ic_cloudfolder,null);
+
+        byte[] myImage = convertImageToByte(image);
 
         Inventory inv1 = new Inventory((long) 0, "Esstisch", "12-10-2017", 399, null, "",
-                18, "nicht definiert", null, "keine Infos", 1, 1, 5, 1);
+                18, "nicht definiert", myImage, "keine Infos", 1, 1, 5, 1);
         this.saveInventory(inv1);
 
         Inventory inv2 = new Inventory((long) 0, "Macbook Pro 13", "12-10-2016", 2399, null, "",
-                24, "nicht definiert", null, "keine Infos", 1, 2, 5, 5 );
+                24, "nicht definiert", myImage, "keine Infos", 1, 2, 5, 5 );
         this.saveInventory(inv2);
 
         Inventory inv3 = new Inventory((long) 0, "Thermomix", "12-09-2016", 1099, null,  "",
-                24, "nicht definiert", null, "keine Infos", 3, 2, 1, 2 );
+                24, "nicht definiert", myImage, "keine Infos", 3, 2, 1, 2 );
         this.saveInventory(inv3);
 
         Inventory inv4 = new Inventory((long) 0, "Fritzbox 7590", "10-09-2017", 329, null,  "",
-                12, "nicht definiert", null, "keine Infos", 1, 2, 5, 2 );
+                12, "nicht definiert", myImage, "keine Infos", 1, 2, 5, 2 );
         this.saveInventory(inv4);
 
         Inventory inv5 = new Inventory((long) 0, "FritzWLAN 1730", "12-09-2016", 99, null,  "",
-                24, "nicht definiert", null, "keine Infos", 2, 2, 2, 2);
+                24, "nicht definiert", myImage, "keine Infos", 2, 2, 2, 2);
         this.saveInventory(inv5);
+    }
+
+    public byte[] convertImageToByte(Drawable myPhoto){
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Bitmap bitmap = ((BitmapDrawable) myPhoto).getBitmap();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] photo = baos.toByteArray();
+
+        return photo;
+    }
+
+
+    public Bitmap convertByteToImage(byte[] image){
+        ByteArrayInputStream imageStream = new ByteArrayInputStream(image);
+        Bitmap theImage= BitmapFactory.decodeStream(imageStream);
+
+        return theImage;
     }
 }

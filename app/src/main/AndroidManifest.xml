@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.marcus_deuss.inventorytracker">
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
 
     <application
         android:name=".InventoryApp"
@@ -10,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
@@ -23,7 +25,11 @@
         <activity
             android:name=".ui.EditInventoryActivity"
             android:label="@string/title_activity_edit_inventory"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.AddInventoryActivity"
+            android:label="Add Inventory"
+            />
     </application>
 
 </manifest>

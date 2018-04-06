@@ -1,6 +1,6 @@
 package de.marcus_deuss.inventorytracker.ui;
 
-import android.app.DialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,8 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.marcus_deuss.inventorytracker.R;
+import de.marcus_deuss.inventorytracker.db.dao.CategoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.RoomDAO;
+import de.marcus_deuss.inventorytracker.db.entity.Category;
+import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,12 +70,15 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
         return inflater.inflate(R.layout.fragment_add_inventory, container, false);
     }
 
@@ -121,4 +133,6 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

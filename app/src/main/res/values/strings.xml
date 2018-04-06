@@ -40,4 +40,5 @@
     <string name="person4Owner">Daugther</string>
     <string name="unknownOwner"><![CDATA[<no person>]]></string>
     <string name="unknownCategory"><![CDATA[<unknown category>]]></string>
+    <string name="unknownRoom"><![CDATA[<unknown Room>]]></string>
 </resources>

@@ -162,6 +162,9 @@ public class RoomDAO extends InventoryDBDAO{
         Room room6 = new Room((long) 6, resources.getString(R.string.bedroom));
         this.saveRoom(room6);
 
+        Room room7 = new Room((long) 6, resources.getString(R.string.unknownRoom));
+        this.saveRoom(room7);
+
     }
 
 }

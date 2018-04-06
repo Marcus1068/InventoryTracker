@@ -12,6 +12,7 @@ import android.app.Application;
 import android.content.res.Resources;
 import android.util.Log;
 
+
 public class InventoryApp extends Application {
 
     private static final String TAG = "InventoryTracker";
@@ -30,4 +31,5 @@ public class InventoryApp extends Application {
 
 
     }
+
 }

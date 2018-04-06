@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -271,7 +272,10 @@ public class MainActivity extends AppCompatActivity
             this.startActivity(editForm);
 
         } else if (id == R.id.nav_gallery) {
-            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, AddInventoryActivity.class);
+
+            startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
             Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
