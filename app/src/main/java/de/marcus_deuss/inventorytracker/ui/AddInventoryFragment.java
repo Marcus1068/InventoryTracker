@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,7 @@ import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
+/*
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link AddInventoryFragment.OnFragmentInteractionListener} interface
@@ -81,7 +80,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         // Required empty public constructor
     }
 
-    /**
+    /*
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
@@ -112,8 +111,25 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        // must do this when using fragments instead of activities because fragments don't have context
         thiscontext = container.getContext();
 
+        // get mode: either edit or add, data comes from calling fragment
+        int mode = getArguments().getInt("updateMode");
+
+        switch (mode){
+            case InventoryApp.ADD_INVENTORY:
+                // Set title bar
+                getActivity().setTitle(R.string.add_inventory);
+                break;
+            case InventoryApp.EDIT_INVENTORY:
+                getActivity().setTitle(R.string.edit_inventory);
+                break;
+            default:
+                break;
+
+        }
+        // TODO decide based on mode how to perform this fragment
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_add_inventory, container, false);
@@ -124,6 +140,9 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         });
 
         imageViewPhoto = view.findViewById(R.id.imageView_photo);
+        imageViewPhoto.setOnClickListener(v -> {
+            showPicture();
+        });
 
         textViewInventory = view.findViewById(R.id.textview_inventory);
         textViewPrice = view.findViewById(R.id.textview_price);
@@ -136,13 +155,13 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
 
         roomSpinner = view.findViewById(R.id.spinner_room);
 
-        ArrayList<String> roomValues = new ArrayList<String>();
+        ArrayList<String> roomValues = new ArrayList<>();
 
         for (Room room : InventoryApp.myRoomDAO.getRoomList()) {
             roomValues.add(room.getRoomName());
         }
 
-        ArrayAdapter<String> roomAdapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, roomValues);
+        ArrayAdapter<String> roomAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, roomValues);
         roomAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
 
         roomSpinner.setAdapter(roomAdapter);
@@ -150,9 +169,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         roomSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
                                        int position, long id) {
-                int i;
-                i = 1;
-                i = 2 +3 ;
+                //
             }
 
             @Override
@@ -167,6 +184,18 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         return view;
     }
 
+    // click on picture shows fullscreen new fragment
+    private void showPicture() {
+        // start show picture activity
+
+        Intent intent = new Intent(thiscontext, ShowPictureActivity.class);
+
+        // put selected picture in intent data
+        byte []myImage = inventory.convertImageToByte(imageViewPhoto.getDrawable());
+        intent.putExtra("bitmapbytes", myImage);
+
+        startActivity(intent);
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -204,7 +233,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
     }
 
 
-    // picture handling stuff
+    // picture handling stuff, generates a unique filename for the taken picture
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -221,7 +250,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         return image;
     }
 
-    // take a picture
+    // take a picture with builtin camera
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
@@ -247,7 +276,8 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
 
     }
 
-    // handle taking the picture, scaled to fit the imageView for display
+    // handle taking the picture, scaled to fit the imageView size for display
+    // will be called by system when new picture taken
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -268,7 +298,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
             // Decode the image file into a Bitmap sized to fill the View
             bmOptions.inJustDecodeBounds = false;
             bmOptions.inSampleSize = scaleFactor;
-            bmOptions.inPurgeable = true;
+            //bmOptions.inPurgeable = true;
 
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             imageViewPhoto.setImageBitmap(bitmap);
@@ -276,11 +306,13 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
         }
     }
 
+    // save any changes back to database
     private void saveInventory(){
         InventoryApp.myInventory.setInventoryName(textViewInventory.getText().toString());
         InventoryApp.myInventory.setPrice(Integer.valueOf(textViewPrice.getText().toString()));
         byte []myImage = inventory.convertImageToByte(imageViewPhoto.getDrawable());
         InventoryApp.myInventory.setImage(myImage);
+        // TODO delete image in file system otherwise waste of storage
 
         // save or update
         //InventoryApp.myInventoryDAO.saveInventory(InventoryApp.myInventory);

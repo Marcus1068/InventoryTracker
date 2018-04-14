@@ -92,13 +92,13 @@ public class MainActivity extends AppCompatActivity
             }
         });
 */
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -184,6 +184,9 @@ public class MainActivity extends AppCompatActivity
         // TODO bug when list is empty
         overviewListView.setSelection(0);
         overviewListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+
+        // TODO must be changed, will crash when list is empty or first id is not 0
+        InventoryApp.myInventory = inventoryDAO.getInventory(1);
         //overviewListView.getId()
 
 
@@ -218,7 +221,7 @@ public class MainActivity extends AppCompatActivity
         if(!permissionGranted){
             checkPermissions();
 
-            return;
+            // return;
 
         }
     }
@@ -245,7 +248,7 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         Log.d(TAG, "onBackPressed");
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -297,17 +300,14 @@ public class MainActivity extends AppCompatActivity
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-
-            // TODO die einzelnen Menüeinträge implementieren und die id Namen ändern
-
-
-            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
-
-        } else if (id == R.id.nav_gallery) {
-            //Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
+        if (id == R.id.edit_inventory) {
             Intent intent = new Intent(this, AddInventoryActivity.class);
+            intent.putExtra("updateMode", InventoryApp.EDIT_INVENTORY);
+            startActivity(intent);
 
+        } else if (id == R.id.add_inventory) {
+            Intent intent = new Intent(this, AddInventoryActivity.class);
+            intent.putExtra("updateMode", InventoryApp.ADD_INVENTORY);
             startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         // close navigation drawer after choosing menu entry
         drawer.closeDrawer(GravityCompat.START, true);
 

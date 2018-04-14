@@ -21,9 +21,12 @@ public class InventoryApp extends Application {
 
     private static final String TAG = "InventoryTracker";
 
+    public static final int EDIT_INVENTORY = 1;
+    public static final int ADD_INVENTORY = 2;
     // needed for translating string resources outside activities
     public static Resources resources;
 
+    // TODO muss von static woanders hin, verursacht Memory Leak
     // chosen inventory
     public static Inventory myInventory = null;
     public static InventoryDAO myInventoryDAO = null;
