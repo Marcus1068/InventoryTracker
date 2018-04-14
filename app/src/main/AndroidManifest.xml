@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.marcus_deuss.inventorytracker">
     <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".InventoryApp"
@@ -23,13 +24,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.EditInventoryActivity"
-            android:label="@string/title_activity_edit_inventory"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.AddInventoryActivity"
             android:label="Add Inventory"
             />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="de.marcus_deuss.inventorytracker"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>

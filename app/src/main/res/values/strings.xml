@@ -41,4 +41,5 @@
     <string name="unknownOwner"><![CDATA[<no person>]]></string>
     <string name="unknownCategory"><![CDATA[<unknown category>]]></string>
     <string name="unknownRoom"><![CDATA[<unknown Room>]]></string>
+    <string name="worksonlyonexternalstorage">This app only works on devices with usable external storage</string>
 </resources>

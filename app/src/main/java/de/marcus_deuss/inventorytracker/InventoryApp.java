@@ -12,6 +12,10 @@ import android.app.Application;
 import android.content.res.Resources;
 import android.util.Log;
 
+import de.marcus_deuss.inventorytracker.db.dao.InventoryDAO;
+import de.marcus_deuss.inventorytracker.db.dao.RoomDAO;
+import de.marcus_deuss.inventorytracker.db.entity.Inventory;
+
 
 public class InventoryApp extends Application {
 
@@ -20,6 +24,10 @@ public class InventoryApp extends Application {
     // needed for translating string resources outside activities
     public static Resources resources;
 
+    // chosen inventory
+    public static Inventory myInventory = null;
+    public static InventoryDAO myInventoryDAO = null;
+    public static RoomDAO myRoomDAO = null;
 
     @Override
     public void onCreate() {

@@ -1,13 +1,17 @@
 package de.marcus_deuss.inventorytracker.ui;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +22,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
@@ -29,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import de.marcus_deuss.inventorytracker.InventoryApp;
 import de.marcus_deuss.inventorytracker.R;
 import de.marcus_deuss.inventorytracker.db.DatabaseHelper;
 import de.marcus_deuss.inventorytracker.db.dao.BrandDAO;
@@ -44,6 +50,8 @@ import de.marcus_deuss.inventorytracker.db.entity.Room;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final int REQUEST_PERMISSION_WRITE = 1001;   // any number
 
     private AddInventoryFragment addInventoryFragment;
 
@@ -62,25 +70,20 @@ public class MainActivity extends AppCompatActivity
     private OwnerDAO ownerDAO;
     private BrandDAO brandDAO;
 
+    private boolean permissionGranted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
 
-        // init database elements, starting with foreign key tables like category and room table
-        brandDAO = new BrandDAO(this);
-        ownerDAO = new OwnerDAO(this);
-        roomDAO = new RoomDAO(this);
-        categoryDAO = new CategoryDAO(this);
-
-        inventoryDAO = new InventoryDAO(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        // FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 /*        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +101,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        // init database elements, starting with foreign key tables like category and room table
+        brandDAO = new BrandDAO(this);
+        ownerDAO = new OwnerDAO(this);
+        roomDAO = new RoomDAO(this);
+        categoryDAO = new CategoryDAO(this);
+
+        inventoryDAO = new InventoryDAO(this);
+
+        InventoryApp.myInventoryDAO = inventoryDAO;
+        InventoryApp.myRoomDAO = roomDAO;
 
         // generate initial data into database only if no data available
         if(inventoryDAO.getInventoryCount() == 0){
@@ -167,6 +181,13 @@ public class MainActivity extends AppCompatActivity
 
         overviewListView.setAdapter(adapter);
 
+        // TODO bug when list is empty
+        overviewListView.setSelection(0);
+        overviewListView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        //overviewListView.getId()
+
+
+
         // ListView Item Click Listener
         overviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -178,17 +199,30 @@ public class MainActivity extends AppCompatActivity
                 int itemPosition     = position;
 
                 // ListView Clicked item value
-                // String  itemValue    = (String) overviewListView.getItemAtPosition(position);
+                //String  itemValue    = (String) overviewListView.getItemAtPosition(position);
+
+
+                InventoryApp.myInventory = inventoryDAO.getInventory(id);
 
                 // Show Alert
-                Toast.makeText(getApplicationContext(),
-                        "Position :"+ itemPosition, Toast.LENGTH_SHORT)
+                String toast = "Pos: " + String.valueOf(itemPosition) + " inv: " + InventoryApp.myInventory.getInventoryName();
+                Toast.makeText(getApplicationContext(), toast, Toast.LENGTH_SHORT)
                         .show();
 
             }
 
         });
+
+        // Android permission check for external storage (save files to file system) and camera
+        // will be called asynchronously and has to be called at the end of OnCreate
+        if(!permissionGranted){
+            checkPermissions();
+
+            return;
+
+        }
     }
+
 
     // close cursor and database
     @Override
@@ -264,12 +298,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+
             // TODO die einzelnen Menüeinträge implementieren und die id Namen ändern
-            //sendEmail();
-            //Toast.makeText(this, "Not implemented yet", Toast.LENGTH_SHORT).show();
-            Intent editForm = new Intent(this, EditInventoryActivity.class);
-            this.startActivity(editForm);
+
+
+            Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
 
         } else if (id == R.id.nav_gallery) {
             //Toast.makeText(this, R.string.notImplementedYet, Toast.LENGTH_SHORT).show();
@@ -342,6 +375,52 @@ public class MainActivity extends AppCompatActivity
             Log.d(TAG, "Email sent...");
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(MainActivity.this, R.string.noEmailInstalled, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Checks if external storage is available for read and write
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    // Initiate request for permissions.
+    private boolean checkPermissions() {
+
+        if (!isExternalStorageWritable()) {
+            Toast.makeText(this, R.string.worksonlyonexternalstorage,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        int permissionCheck = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_PERMISSION_WRITE);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // Handle permissions result
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_WRITE:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionGranted = true;
+                    Toast.makeText(this, "External storage permission granted",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "You must grant permission!", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 }
