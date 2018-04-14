@@ -247,7 +247,7 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
 
     }
 
-    // handle taking the picture
+    // handle taking the picture, scaled to fit the imageView for display
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
@@ -273,23 +273,14 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
             Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
             imageViewPhoto.setImageBitmap(bitmap);
 
-
-
-
-
-
- //           Bundle extras = data.getExtras();
- //           Bitmap imageBitmap = (Bitmap) extras.get("data");
-            // image view for displaying preview picture of inventory
-
-  //          imageViewPhoto.setImageBitmap(imageBitmap);
-
         }
     }
 
     private void saveInventory(){
         InventoryApp.myInventory.setInventoryName(textViewInventory.getText().toString());
         InventoryApp.myInventory.setPrice(Integer.valueOf(textViewPrice.getText().toString()));
+        byte []myImage = inventory.convertImageToByte(imageViewPhoto.getDrawable());
+        InventoryApp.myInventory.setImage(myImage);
 
         // save or update
         //InventoryApp.myInventoryDAO.saveInventory(InventoryApp.myInventory);
@@ -303,6 +294,9 @@ public class AddInventoryFragment extends DialogFragment implements OnClickListe
     private void loadFromDatabase(){
         textViewInventory.setText(InventoryApp.myInventory.getInventoryName());
         textViewPrice.setText(String.valueOf(InventoryApp.myInventory.getPrice()));
+
+        Bitmap myImage = inventory.convertByteToImage(InventoryApp.myInventory.getImage());
+        imageViewPhoto.setImageBitmap(myImage);
 
         // fill the spinner elements
         //roomSpinner.setAdapter(roomAdapter);
